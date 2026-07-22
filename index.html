@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="个人博客 - 记录思考，分享生活">
+  <title>我的博客</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- 导航栏 -->
+  <header class="site-header">
+    <div class="container">
+      <a href="/" class="site-logo">📝 我的博客</a>
+      <nav class="site-nav">
+        <a href="#home" class="nav-link active" data-page="home">首页</a>
+        <a href="#blog" class="nav-link" data-page="blog">文章</a>
+        <a href="#about" class="nav-link" data-page="about">关于</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+        <span class="theme-icon">🌙</span>
+      </button>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 主内容 -->
+  <main id="app">
+    <!-- 首页 -->
+    <section id="home-page" class="page active">
+      <div class="hero">
+        <div class="container">
+          <h1 class="hero-title">欢迎来到我的博客</h1>
+          <p class="hero-subtitle">用文字记录思考，用代码创造价值</p>
+          <div class="hero-tags">
+            <span class="tag"># Python</span>
+            <span class="tag"># Java</span>
+            <span class="tag"># Linux</span>
+            <span class="tag"># Vim</span>
+            <span class="tag"># uv</span>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <h2 class="section-title">最新文章</h2>
+        <div class="post-grid" id="homePostGrid"></div>
+        <div class="view-all">
+          <a href="#blog" class="btn btn-outline" data-page="blog">查看全部文章 →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 文章列表 -->
+    <section id="blog-page" class="page">
+      <div class="container">
+        <h1 class="page-title">全部文章</h1>
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="搜索文章..." aria-label="搜索文章">
+          <span class="search-icon">🔍</span>
+        </div>
+        <div class="tag-filter" id="tagFilter">
+          <button class="tag-btn active" data-tag="all">全部</button>
+        </div>
+        <div class="post-list" id="postList"></div>
+      </div>
+    </section>
+
+    <!-- 文章详情 -->
+    <section id="post-page" class="page">
+      <div class="container">
+        <article class="post-article" id="postArticle"></article>
+      </div>
+    </section>
+
+    <!-- 关于 -->
+    <section id="about-page" class="page">
+      <div class="container">
+        <div class="about-content">
+          <div class="about-avatar">👨‍💻</div>
+          <h1>关于我</h1>
+          <p class="about-intro">你好！我是一名热爱技术的开发者 / 写作者。</p>
+          <p>这个博客是我记录编程学习与技术探索的空间。在这里，我会分享：</p>
+          <ul class="about-list">
+            <li>🐍 Python 开发技巧与工具链（uv、Ruff、Pyright）</li>
+            <li>☕ Java 新特性与后端架构实践</li>
+            <li>🐧 Linux 命令行技巧与 Shell 脚本</li>
+            <li>⌨️ Vim 编辑器的使用心得与配置优化</li>
+          </ul>
+          <div class="about-links">
+            <a href="https://github.com" target="_blank" rel="noopener" class="social-link">GitHub</a>
+            <a href="mailto:hello@example.com" class="social-link">Email</a>
+            <a href="#" class="social-link">RSS</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 我的博客. Powered by ❤️ and ☕</p>
+    </div>
+  </footer>
+
+  <button id="backToTop" class="back-to-top" aria-label="回到顶部">↑</button>
+
+  <script src="js/posts.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
