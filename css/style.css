@@ -558,6 +558,14 @@ img {
   color: var(--accent);
 }
 
+/* ===== Giscus 评论 ===== */
+.giscus-section {
+  max-width: 720px;
+  margin: 3rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
 /* ===== 关于页面 ===== */
 .about-content {
   max-width: 640px;
@@ -652,6 +660,26 @@ img {
 .view-all {
   text-align: center;
   margin: 2.5rem 0 3rem;
+}
+
+/* Hero 区域下载按钮 */
+.btn-hero {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.7rem 2rem;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all var(--transition);
+}
+
+.btn-hero:hover {
+  background: var(--accent-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  color: #fff;
 }
 
 /* ===== 页脚 ===== */

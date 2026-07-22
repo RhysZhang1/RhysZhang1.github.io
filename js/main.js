@@ -1,18 +1,31 @@
 /**
  * 个人博客 — 主逻辑
- * 处理：路由、文章渲染、搜索、标签筛选、主题切换
+ * 从 posts/index.json 获取元数据，fetch .md 文件用 marked.js 渲染
  */
 
+let postMeta = [];
+const postCache = {};
+
 // ===== 初始化 =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initTheme();
-  initRouter();
   initBackToTop();
   initMobileMenu();
+
+  try {
+    const resp = await fetch('posts/index.json');
+    if (!resp.ok) throw new Error('Failed to load index.json');
+    postMeta = await resp.json();
+  } catch (err) {
+    console.error('加载文章列表失败:', err);
+    postMeta = [];
+  }
+
+  initRouter();
   initSearch();
   initTagFilter();
   renderHomePosts();
-  renderPostList(BLOG_POSTS);
+  renderPostList(postMeta);
 });
 
 // ===== 主题切换 =====
@@ -29,41 +42,30 @@ function initTheme() {
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('blog-theme', next);
     updateThemeIcon(next);
+    updateGiscusTheme();
   });
 }
 
 function updateThemeIcon(theme) {
   const icon = document.querySelector('.theme-icon');
-  if (icon) {
-    icon.textContent = theme === 'dark' ? '☀️' : '🌙';
-  }
+  if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
 }
 
 // ===== 路由系统 =====
 function initRouter() {
   window.addEventListener('hashchange', handleRoute);
 
-  // 处理导航点击
   document.addEventListener('click', (e) => {
     const link = e.target.closest('[data-page]');
     if (!link) return;
     e.preventDefault();
-    const page = link.getAttribute('data-page');
-    if (page === 'blog') {
-      window.location.hash = '#blog';
-    } else if (page === 'about') {
-      window.location.hash = '#about';
-    } else if (page === 'home') {
-      window.location.hash = '#home';
-    }
+    window.location.hash = '#' + link.getAttribute('data-page');
   });
 
-  // 处理文章卡片/列表项点击（事件委托）
   document.addEventListener('click', (e) => {
     const card = e.target.closest('[data-post-id]');
     if (!card) return;
-    const postId = card.getAttribute('data-post-id');
-    window.location.hash = `#post/${postId}`;
+    window.location.hash = `#post/${card.getAttribute('data-post-id')}`;
   });
 
   handleRoute();
@@ -72,10 +74,7 @@ function initRouter() {
 function handleRoute() {
   const hash = window.location.hash || '#home';
 
-  // 更新导航高亮
   document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-
-  // 隐藏所有页面
   document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
 
   if (hash === '#blog' || hash === '#home' || hash === '#about' || hash === '') {
@@ -83,8 +82,7 @@ function handleRoute() {
     showPage(pageName);
     highlightNav(pageName);
   } else if (hash.startsWith('#post/')) {
-    const postId = hash.slice(6);
-    showPost(postId);
+    showPost(hash.slice(6));
     highlightNav('blog');
   } else {
     showPage('home');
@@ -104,8 +102,8 @@ function highlightNav(name) {
   if (link) link.classList.add('active');
 }
 
-function showPost(postId) {
-  const post = BLOG_POSTS.find(p => p.id === postId);
+async function showPost(postId) {
+  const meta = postMeta.find(p => p.id === postId);
   const articlePage = document.getElementById('post-page');
   const articleContainer = document.getElementById('postArticle');
 
@@ -113,7 +111,14 @@ function showPost(postId) {
 
   articlePage.classList.add('active');
 
-  if (!post) {
+  // 加载中
+  articleContainer.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-state-icon">⏳</div>
+      <p>加载中...</p>
+    </div>`;
+
+  if (!meta) {
     articleContainer.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">📄</div>
@@ -125,32 +130,100 @@ function showPost(postId) {
     return;
   }
 
-  articleContainer.innerHTML = `
-    <button class="post-back" onclick="window.location.hash='#blog'">← 返回文章列表</button>
-    <header class="post-article-header">
-      <h1 class="post-article-title">${escapeHtml(post.title)}</h1>
-      <div class="post-article-meta">
-        <span>📅 ${post.date}</span>
+  try {
+    // 缓存或 fetch
+    if (!postCache[postId]) {
+      const resp = await fetch(`posts/${meta.filename}`);
+      if (!resp.ok) throw new Error('Failed to load post');
+      postCache[postId] = await resp.text();
+    }
+
+    const htmlContent = marked.parse(postCache[postId]);
+
+    articleContainer.innerHTML = `
+      <button class="post-back" onclick="window.location.hash='#blog'">← 返回文章列表</button>
+      <header class="post-article-header">
+        <h1 class="post-article-title">${escapeHtml(meta.title)}</h1>
+        <div class="post-article-meta">
+          <span>📅 ${meta.date}</span>
+        </div>
+        <div class="post-article-tags">
+          ${meta.tags.map(t => `<span class="post-card-tag">${escapeHtml(t)}</span>`).join('')}
+        </div>
+      </header>
+      <div class="post-article-body">${htmlContent}</div>
+      <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border-color);">
+        <a href="#blog" class="btn btn-outline">← 返回文章列表</a>
       </div>
-      <div class="post-article-tags">
-        ${post.tags.map(t => `<span class="post-card-tag">${escapeHtml(t)}</span>`).join('')}
+      <div id="giscus-container" class="giscus-section"></div>`;
+
+    loadGiscus(postId);
+  } catch (err) {
+    console.error('加载文章失败:', err);
+    articleContainer.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">⚠️</div>
+        <p>文章加载失败，请稍后重试</p>
       </div>
-    </header>
-    <div class="post-article-body">
-      ${post.content}
-    </div>
-    <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border-color);">
-      <a href="#blog" class="btn btn-outline">← 返回文章列表</a>
-    </div>`;
+      <div style="text-align:center;margin-top:1rem;">
+        <a href="#blog" class="btn btn-outline">← 返回文章列表</a>
+      </div>`;
+  }
+}
+
+// ===== Giscus 评论 =====
+function loadGiscus(postId) {
+  const container = document.getElementById('giscus-container');
+  if (!container) return;
+
+  // 清空旧内容
+  container.innerHTML = '';
+
+  const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark'
+    ? 'https://giscus.app/themes/dark.css'
+    : 'https://giscus.app/themes/light.css';
+
+  // giscus 评论组件 — 按文章 ID 隔离留言
+  const script = document.createElement('script');
+  script.src = 'https://giscus.app/client.js';
+  script.setAttribute('data-repo', 'RhysZhang1/RhysZhang1.github.io');
+  script.setAttribute('data-repo-id', 'R_kgDOTf36Zg');
+  script.setAttribute('data-category', 'Announcements');
+  script.setAttribute('data-category-id', 'DIC_kwDOTf36Zs4DBukF');
+  script.setAttribute('data-mapping', 'specific');
+  script.setAttribute('data-term', postId);
+  script.setAttribute('data-strict', '0');
+  script.setAttribute('data-reactions-enabled', '1');
+  script.setAttribute('data-emit-metadata', '0');
+  script.setAttribute('data-input-position', 'bottom');
+  script.setAttribute('data-theme', currentTheme);
+  script.setAttribute('data-lang', 'zh-CN');
+  script.setAttribute('crossorigin', 'anonymous');
+  script.async = true;
+
+  container.appendChild(script);
+}
+
+// 主题切换时同步更新 giscus
+function updateGiscusTheme() {
+  const iframe = document.querySelector('.giscus-frame');
+  if (!iframe) return;
+
+  const theme = document.documentElement.getAttribute('data-theme') === 'dark'
+    ? 'dark'
+    : 'light';
+
+  iframe.contentWindow.postMessage(
+    { giscus: { setConfig: { theme: theme } } },
+    'https://giscus.app'
+  );
 }
 
 // ===== 首页文章卡片 =====
 function renderHomePosts() {
   const grid = document.getElementById('homePostGrid');
   if (!grid) return;
-
-  const recent = BLOG_POSTS.slice(0, 3);
-  grid.innerHTML = recent.map(post => createPostCard(post)).join('');
+  grid.innerHTML = postMeta.slice(0, 3).map(createPostCard).join('');
 }
 
 // ===== 文章列表渲染 =====
@@ -181,7 +254,7 @@ function renderPostList(posts) {
   `).join('');
 }
 
-// ===== 文章卡片 HTML（首页用） =====
+// ===== 文章卡片 HTML =====
 function createPostCard(post) {
   return `
     <article class="post-card" data-post-id="${post.id}">
@@ -194,7 +267,7 @@ function createPostCard(post) {
     </article>`;
 }
 
-// ===== 搜索功能 =====
+// ===== 搜索 =====
 function initSearch() {
   const input = document.getElementById('searchInput');
   if (!input) return;
@@ -204,23 +277,21 @@ function initSearch() {
     const activeTag = document.querySelector('.tag-btn.active');
     const currentTag = activeTag ? activeTag.getAttribute('data-tag') : 'all';
 
-    const filtered = BLOG_POSTS.filter(post => {
+    renderPostList(postMeta.filter(post => {
       const matchTag = currentTag === 'all' || post.tags.includes(currentTag);
       const matchSearch = !query ||
         post.title.toLowerCase().includes(query) ||
         post.summary.toLowerCase().includes(query) ||
         post.tags.some(t => t.toLowerCase().includes(query));
       return matchTag && matchSearch;
-    });
-
-    renderPostList(filtered);
+    }));
   });
 }
 
 // ===== 标签筛选 =====
 function initTagFilter() {
   const allTags = new Set();
-  BLOG_POSTS.forEach(post => post.tags.forEach(t => allTags.add(t)));
+  postMeta.forEach(post => post.tags.forEach(t => allTags.add(t)));
 
   const filterContainer = document.getElementById('tagFilter');
   if (!filterContainer) return;
@@ -232,27 +303,24 @@ function initTagFilter() {
 
   filterContainer.addEventListener('click', (e) => {
     if (!e.target.classList.contains('tag-btn')) return;
-
     filterContainer.querySelectorAll('.tag-btn').forEach(btn => btn.classList.remove('active'));
     e.target.classList.add('active');
 
     const tag = e.target.getAttribute('data-tag');
     const query = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
 
-    const filtered = BLOG_POSTS.filter(post => {
+    renderPostList(postMeta.filter(post => {
       const matchTag = tag === 'all' || post.tags.includes(tag);
       const matchSearch = !query ||
         post.title.toLowerCase().includes(query) ||
         post.summary.toLowerCase().includes(query) ||
         post.tags.some(t => t.toLowerCase().includes(query));
       return matchTag && matchSearch;
-    });
-
-    renderPostList(filtered);
+    }));
   });
 }
 
-// ===== 回到顶部按钮 =====
+// ===== 回到顶部 =====
 function initBackToTop() {
   const btn = document.getElementById('backToTop');
   if (!btn) return;
@@ -272,24 +340,18 @@ function initMobileMenu() {
   const nav = document.querySelector('.site-nav');
   if (!btn || !nav) return;
 
-  btn.addEventListener('click', () => {
-    nav.classList.toggle('open');
-  });
+  btn.addEventListener('click', () => nav.classList.toggle('open'));
 
   nav.addEventListener('click', (e) => {
-    if (e.target.classList.contains('nav-link')) {
-      nav.classList.remove('open');
-    }
+    if (e.target.classList.contains('nav-link')) nav.classList.remove('open');
   });
 
   document.addEventListener('click', (e) => {
-    if (!btn.contains(e.target) && !nav.contains(e.target)) {
-      nav.classList.remove('open');
-    }
+    if (!btn.contains(e.target) && !nav.contains(e.target)) nav.classList.remove('open');
   });
 }
 
-// ===== 工具函数 =====
+// ===== 工具 =====
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
