@@ -71,79 +71,113 @@ $theme = isset($_COOKIE['blog-theme']) ? $_COOKIE['blog-theme'] : 'light';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="下载中心 - 资源文件分享">
-  <title><?php echo $siteTitle; ?> — 我的博客</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title><?php echo $siteTitle; ?> — 风春桐海君</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    .download-hero {
+      background: linear-gradient(135deg, var(--accent-bg), transparent);
+      padding: 3rem 0 2.5rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+    .download-hero h1 {
+      font-family: var(--serif);
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .download-hero p {
+      color: var(--text2);
+      font-size: 1rem;
+    }
     .download-header {
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;
     }
-    .file-count { font-size: 0.95rem; color: var(--text-muted); }
+    .file-count { font-size: 0.95rem; color: var(--text3); }
     .file-table {
       width: 100%; border-collapse: collapse;
-      background: var(--bg-card); border: 1px solid var(--border-color);
+      background: var(--card); border: 1px solid var(--border);
       border-radius: var(--radius); overflow: hidden;
     }
     .file-table th {
-      background: var(--bg-secondary); padding: 0.85rem 1rem;
-      text-align: left; font-size: 0.85rem; color: var(--text-secondary);
-      font-weight: 600; border-bottom: 2px solid var(--border-color); white-space: nowrap;
+      background: var(--bg2); padding: 0.85rem 1rem;
+      text-align: left; font-size: 0.85rem; color: var(--text2);
+      font-weight: 600; border-bottom: 2px solid var(--border); white-space: nowrap;
     }
     .file-table td {
-      padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-color);
+      padding: 0.85rem 1rem; border-bottom: 1px solid var(--border);
       font-size: 0.95rem; vertical-align: middle;
     }
     .file-table tr:last-child td { border-bottom: none; }
     .file-table tr:hover td { background: var(--accent-bg); }
     .file-name {
       display: flex; align-items: center; gap: 0.5rem;
-      font-weight: 500; color: var(--text-primary); word-break: break-all;
+      font-weight: 500; color: var(--text); word-break: break-all;
     }
     .file-icon { font-size: 1.3rem; flex-shrink: 0; }
-    .file-size, .file-date { color: var(--text-muted); white-space: nowrap; font-size: 0.85rem; }
+    .file-size, .file-date { color: var(--text3); white-space: nowrap; font-size: 0.85rem; }
     .btn-download {
       display: inline-flex; align-items: center; gap: 0.3rem;
-      padding: 0.4rem 1rem; background: var(--accent); color: #fff !important;
-      border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 500;
+      padding: 0.4rem 1rem; background: var(--g1); color: #fff !important;
+      border-radius: var(--radius); font-size: 0.85rem; font-weight: 500;
       white-space: nowrap; text-decoration: none;
-      transition: all var(--transition);
+      transition: all var(--t);
     }
-    .btn-download:hover { background: var(--accent-light); transform: translateY(-1px); }
+    .btn-download:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--accent-glow); }
     .empty-downloads { text-align: center; padding: 5rem 2rem; }
     .empty-downloads-icon { font-size: 4rem; margin-bottom: 1rem; }
-    .empty-downloads h2 { font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
-    .empty-downloads p { color: var(--text-muted); font-size: 0.9rem; }
+    .empty-downloads h2 { font-size: 1.25rem; color: var(--text2); margin-bottom: 0.5rem; }
+    .empty-downloads p { color: var(--text3); font-size: 0.9rem; }
     @media (max-width: 768px) {
       .file-table th:nth-child(3), .file-table td:nth-child(3) { display: none; }
       .file-table th, .file-table td { padding: 0.65rem 0.75rem; }
+      main { padding-bottom: 4rem; }
     }
   </style>
 </head>
 <body>
+  <!-- 导航栏（与首页保持一致） -->
   <header class="site-header">
     <div class="container">
-      <a href="/" class="site-logo">📝 我的博客</a>
+      <a href="/" class="site-logo">
+        <span class="site-logo-icon">🌿</span>
+        风春桐海君
+      </a>
       <nav class="site-nav">
         <a href="index.html#home" class="nav-link">首页</a>
         <a href="index.html#blog" class="nav-link">文章</a>
+        <a href="index.html#timeline" class="nav-link">动态</a>
+        <a href="index.html#guestbook" class="nav-link">留言</a>
         <a href="index.html#about" class="nav-link">关于</a>
         <a href="download.php" class="nav-link active">下载</a>
       </nav>
-      <button class="theme-toggle" aria-label="切换主题" onclick="toggleTheme()">
-        <span class="theme-icon"><?php echo $theme === 'dark' ? '☀️' : '🌙'; ?></span>
-      </button>
-      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="header-actions">
+        <button class="theme-toggle" aria-label="切换主题" onclick="toggleTheme()">
+          <span class="theme-icon"><?php echo $theme === 'dark' ? '☀️' : '🌙'; ?></span>
+        </button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <main style="flex:1;">
-    <div class="container" style="padding-top:2rem;padding-bottom:3rem;">
+  <!-- 主内容 -->
+  <main style="flex:1;padding-top:var(--header);">
+    <div class="download-hero">
+      <div class="container">
+        <h1>📥 下载中心</h1>
+        <p>分享资源与工具文件</p>
+      </div>
+    </div>
+    <div class="container" style="padding-bottom:3rem;">
       <div class="download-header">
-        <h1 class="page-title" style="margin:0;">📥 下载中心</h1>
         <span class="file-count">
           <?php if (count($files) === 0): ?>
             暂无文件
@@ -196,13 +230,32 @@ $theme = isset($_COOKIE['blog-theme']) ? $_COOKIE['blog-theme'] : 'light';
     </div>
   </main>
 
+  <!-- ===== 移动端底部导航栏 ===== -->
+  <nav class="bottom-nav" id="bottomNav">
+    <a href="index.html#home" class="bottom-nav-item">🏠<span class="bni-label">首页</span></a>
+    <a href="index.html#blog" class="bottom-nav-item">📝<span class="bni-label">文章</span></a>
+    <a href="index.html#timeline" class="bottom-nav-item">📡<span class="bni-label">动态</span></a>
+    <a href="index.html#guestbook" class="bottom-nav-item">💬<span class="bni-label">留言</span></a>
+    <a href="index.html#about" class="bottom-nav-item">👤<span class="bni-label">关于</span></a>
+    <a href="download.php" class="bottom-nav-item active">📥<span class="bni-label">下载</span></a>
+  </nav>
+
+  <!-- 页脚 -->
   <footer class="site-footer">
     <div class="container">
-      <p>&copy; 2026 我的博客. Powered by ❤️ and ☕</p>
+      <div class="footer-links">
+        <a href="index.html#home">首页</a>
+        <a href="index.html#blog">文章</a>
+        <a href="index.html#timeline">动态</a>
+        <a href="index.html#guestbook">留言</a>
+        <a href="index.html#about">关于</a>
+        <a href="download.php">下载</a>
+      </div>
+      <p>&copy; 2026 风春桐海君. Built with ❤️ and ☕</p>
     </div>
   </footer>
 
-  <button id="backToTop" class="back-to-top visible" aria-label="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  <button id="backToTop" class="back-to-top" aria-label="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
   <script>
     function toggleTheme() {
@@ -213,15 +266,25 @@ $theme = isset($_COOKIE['blog-theme']) ? $_COOKIE['blog-theme'] : 'light';
       var icon = document.querySelector('.theme-icon');
       if (icon) icon.textContent = next === 'dark' ? '☀️' : '🌙';
     }
+
+    // 移动端菜单
     document.getElementById('mobileMenuBtn').addEventListener('click', function() {
       document.querySelector('.site-nav').classList.toggle('open');
     });
+
+    // 回到顶部
     window.addEventListener('scroll', function() {
       var btn = document.getElementById('backToTop');
       if (btn) btn.classList.toggle('visible', window.scrollY > 400);
     });
     document.getElementById('backToTop').addEventListener('click', function() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // 滚动时 header 加阴影
+    window.addEventListener('scroll', function() {
+      var header = document.querySelector('.site-header');
+      if (header) header.classList.toggle('scrolled', window.scrollY > 20);
     });
   </script>
 </body>

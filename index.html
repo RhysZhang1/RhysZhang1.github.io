@@ -3,113 +3,311 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="张雨涵的个人博客 - 记录思考，分享生活">
-  <title>我的博客</title>
+  <meta name="description" content="风春桐海君的个人博客 - 记录思考，分享技术">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>风春桐海君 — 技术博客</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- 导航栏 -->
+  <div class="reading-progress" id="readingProgress"></div>
+
+  <!-- ===== 导航栏 ===== -->
   <header class="site-header">
-    <div class="container">
-      <a href="/" class="site-logo">📝 我的博客</a>
+    <div class="container nav-container">
+      <a href="/" class="site-logo">
+        <span class="site-logo-icon">🌿</span>
+        <span class="site-logo-text">风春桐海君</span>
+      </a>
       <nav class="site-nav">
         <a href="#home" class="nav-link active" data-page="home">首页</a>
         <a href="#blog" class="nav-link" data-page="blog">文章</a>
+        <a href="#timeline" class="nav-link" data-page="timeline">动态</a>
+        <a href="#guestbook" class="nav-link" data-page="guestbook">留言</a>
         <a href="#about" class="nav-link" data-page="about">关于</a>
         <a href="download.php" class="nav-link">下载</a>
       </nav>
-      <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
-        <span class="theme-icon">🌙</span>
-      </button>
-      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- 主内容 -->
+  <!-- ===== 主内容 ===== -->
   <main id="app">
+
+    <!-- ============================================================ -->
     <!-- 首页 -->
+    <!-- ============================================================ -->
     <section id="home-page" class="page active">
+
+      <!-- Hero 区域：背景图 + 浮动光斑 -->
       <div class="hero">
-        <div class="container">
-          <h1 class="hero-title">欢迎来到我的博客</h1>
-          <p class="hero-subtitle">用文字记录思考，用代码创造价值</p>
-          <div class="hero-tags">
-            <span class="tag"># Python</span>
-            <span class="tag"># Java</span>
-            <span class="tag"># Linux</span>
-            <span class="tag"># Vim</span>
-            <span class="tag"># uv</span>
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-particles">
+          <span class="hp hp-1"></span>
+          <span class="hp hp-2"></span>
+          <span class="hp hp-3"></span>
+          <span class="hp hp-4"></span>
+          <span class="hp hp-5"></span>
+          <span class="hp hp-6"></span>
+        </div>
+        <div class="hero-content">
+          <span class="hero-badge glass">✨ 个人技术博客</span>
+          <h1 class="hero-title">
+            <span class="hero-title-line">风春桐海君</span>
+          </h1>
+          <div class="hero-typewriter">
+            <span id="heroTypewriter"></span><span class="cursor">|</span>
           </div>
-          <a href="download.php" class="btn btn-hero">📥 下载中心</a>
+          <p class="hero-subtitle">长风破浪会有时，直挂云帆济沧海</p>
+          <div class="hero-stats">
+            <div class="hero-stat"><span class="hs-num" id="statPosts2">0</span><span class="hs-label">文章</span></div>
+            <div class="hero-stat"><span class="hs-num" id="statTags2">0</span><span class="hs-label">标签</span></div>
+            <div class="hero-stat"><span class="hs-num" id="statWords">0</span><span class="hs-label">字</span></div>
+          </div>
+          <div class="hero-actions">
+            <a href="#blog" class="btn btn-primary btn-lg" data-page="blog">📖 浏览文章</a>
+            <a href="download.php" class="btn btn-glass">📥 下载中心</a>
+            <a href="#about" class="btn btn-glass" data-page="about">👨‍💻 关于我</a>
+          </div>
         </div>
+        <!-- 去掉向下滚动文字 -->
       </div>
-      <div class="container">
-        <h2 class="section-title">最新文章</h2>
-        <div class="post-grid" id="homePostGrid"></div>
-        <div class="view-all">
-          <a href="#blog" class="btn btn-outline" data-page="blog">查看全部文章 →</a>
+
+      <!-- 首页内容：双栏 -->
+      <div class="home-layout">
+        <!-- 主内容 -->
+        <div class="home-main">
+          <div class="section-header reveal">
+            <div class="section-label">RECENT POSTS</div>
+            <h2 class="section-title">
+              <span class="accent-bar"></span>最新文章
+            </h2>
+            <p class="section-sub">最近更新的技术分享与学习心得</p>
+          </div>
+          <div class="post-grid" id="homePostGrid"></div>
+          <div class="view-all reveal">
+            <a href="#blog" class="btn btn-primary" data-page="blog">
+              查看全部文章
+              <span class="btn-arrow">→</span>
+            </a>
+          </div>
         </div>
+
+        <!-- 侧栏 -->
+        <aside class="home-sidebar">
+          <div class="sidebar-card glass-card reveal">
+            <div class="sc-avatar-ring">
+              <div class="sc-avatar">🌿</div>
+            </div>
+            <h3 class="sc-name">风春桐海君</h3>
+            <p class="sc-bio">热爱技术的开发者，在编程世界里探索无限可能。</p>
+            <div class="sc-stats">
+              <div class="sc-stat"><span class="sc-stat-num" id="statPosts">0</span>文章</div>
+              <div class="sc-stat"><span class="sc-stat-num" id="statTags">0</span>标签</div>
+            </div>
+            <div class="sc-social">
+              <a href="https://github.com/RhysZhang1" target="_blank" rel="noopener" class="sc-social-link">🐙</a>
+              <a href="mailto:rhys1233@outlook.cl" class="sc-social-link">✉️</a>
+              <a href="#" class="sc-social-link">📡</a>
+            </div>
+          </div>
+
+          <div class="widget glass-card reveal">
+            <div class="widget-head">
+              <span class="widget-icon">📝</span>
+              <h3 class="widget-title">最近文章</h3>
+            </div>
+            <ul class="widget-list" id="recentPostsList"></ul>
+          </div>
+
+          <div class="widget glass-card reveal">
+            <div class="widget-head">
+              <span class="widget-icon">🏷️</span>
+              <h3 class="widget-title">标签云</h3>
+            </div>
+            <div class="tag-cloud" id="tagCloud"></div>
+          </div>
+        </aside>
       </div>
     </section>
 
+    <!-- ============================================================ -->
     <!-- 文章列表 -->
+    <!-- ============================================================ -->
     <section id="blog-page" class="page">
       <div class="container">
-        <h1 class="page-title">全部文章</h1>
-        <div class="search-bar">
-          <input type="text" id="searchInput" placeholder="搜索文章..." aria-label="搜索文章">
+        <div class="page-hero">
+          <h1 class="page-title reveal">📝 全部文章</h1>
+          <p class="page-desc reveal">记录游戏故事、文学创作与随感杂记</p>
+        </div>
+        <div class="search-bar reveal">
+          <input type="text" id="searchInput" placeholder="搜索文章标题、摘要或标签..." aria-label="搜索文章">
           <span class="search-icon">🔍</span>
         </div>
-        <div class="tag-filter" id="tagFilter">
-          <button class="tag-btn active" data-tag="all">全部</button>
-        </div>
+        <div class="tag-filter reveal" id="tagFilter"></div>
         <div class="post-list" id="postList"></div>
+        <div class="page-footer-spacer"></div>
       </div>
     </section>
 
+    <!-- ============================================================ -->
     <!-- 文章详情 -->
+    <!-- ============================================================ -->
     <section id="post-page" class="page">
       <div class="container">
         <article class="post-article" id="postArticle"></article>
       </div>
     </section>
 
+    <!-- ============================================================ -->
+    <!-- 动态 / 时间线 -->
+    <!-- ============================================================ -->
+    <section id="timeline-page" class="page">
+      <div class="container">
+        <div class="page-hero">
+          <h1 class="page-title reveal">📜 动态</h1>
+          <p class="page-desc reveal">记录博客的更新与成长轨迹</p>
+        </div>
+        <div class="timeline" id="timelineContainer"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 留言板 -->
+    <!-- ============================================================ -->
+    <section id="guestbook-page" class="page">
+      <div class="container">
+        <div class="page-hero">
+          <h1 class="page-title reveal">💬 留言板</h1>
+          <p class="page-desc reveal">有任何想法、问题或建议？欢迎在这里留言交流 👋</p>
+        </div>
+        <div class="guestbook-messages" id="guestbookMessages"></div>
+        <div id="guestbook-giscus" class="giscus-section"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
     <!-- 关于 -->
+    <!-- ============================================================ -->
     <section id="about-page" class="page">
       <div class="container">
-        <div class="about-content">
-          <div class="about-avatar">👨‍💻</div>
-          <h1>关于我</h1>
-          <p class="about-intro">你好！我是风春桐海君，一名热爱技术的开发者 / 写作者。</p>
-          <p>这个博客是我记录编程学习与技术探索的空间。在这里，我会分享：</p>
-          <ul class="about-list">
-            <li>🐍 Python 开发技巧与工具链（uv、Ruff、Pyright）</li>
-            <li>☕ Java 新特性与后端架构实践</li>
-            <li>🐧 Linux 命令行技巧与 Shell 脚本</li>
-            <li>⌨️ Vim 编辑器的使用心得与配置优化</li>
-          </ul>
-          <div class="about-links">
-            <a href="https://github.com/RhysZhang1" target="_blank" rel="noopener" class="social-link">GitHub</a>
-            <a href="mailto:rhys1233@outlook.cl" class="social-link">Email</a>
-            <a href="#" class="social-link">RSS</a>
+        <div class="about-hero-section reveal">
+          <div class="about-avatar-wrap">
+            <div class="about-avatar-ring"></div>
+            <div class="about-avatar-main">🌿</div>
+          </div>
+          <h1 class="about-name">风春桐海君</h1>
+          <p class="about-tagline">热爱技术的开发者 / 写作者</p>
+          <p class="about-desc">从 Python 数据科学到 Java 企业开发，从 Linux 系统管理到 Vim 编辑器哲学。这个博客是我记录学习笔记、分享实战经验的空间。</p>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-item glass-card reveal">
+            <div class="about-item-icon">⚡</div>
+            <h3>技术技能</h3>
+            <div class="skill-list">
+              <div class="skill-item">
+                <div class="skill-info"><span>Python</span><span>90%</span></div>
+                <div class="skill-track"><div class="skill-fill" style="width:90%"></div></div>
+              </div>
+              <div class="skill-item">
+                <div class="skill-info"><span>Java</span><span>80%</span></div>
+                <div class="skill-track"><div class="skill-fill" style="width:80%"></div></div>
+              </div>
+              <div class="skill-item">
+                <div class="skill-info"><span>Linux / Shell</span><span>85%</span></div>
+                <div class="skill-track"><div class="skill-fill" style="width:85%"></div></div>
+              </div>
+              <div class="skill-item">
+                <div class="skill-info"><span>Vim / Neovim</span><span>75%</span></div>
+                <div class="skill-track"><div class="skill-fill" style="width:75%"></div></div>
+              </div>
+              <div class="skill-item">
+                <div class="skill-info"><span>Git / DevOps</span><span>70%</span></div>
+                <div class="skill-track"><div class="skill-fill" style="width:70%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="about-item glass-card reveal">
+            <div class="about-item-icon">💬</div>
+            <h3>找到我</h3>
+            <div class="contact-links">
+              <a href="https://github.com/RhysZhang1" target="_blank" rel="noopener" class="contact-link">
+                <span class="cl-icon">🐙</span>
+                <span class="cl-text">GitHub</span>
+                <span class="cl-arrow">→</span>
+              </a>
+              <a href="mailto:rhys1233@outlook.cl" class="contact-link">
+                <span class="cl-icon">✉️</span>
+                <span class="cl-text">Email</span>
+                <span class="cl-arrow">→</span>
+              </a>
+              <a href="#" class="contact-link">
+                <span class="cl-icon">📡</span>
+                <span class="cl-text">RSS</span>
+                <span class="cl-arrow">→</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- 页脚 -->
+  <!-- ===== 页脚 ===== -->
   <footer class="site-footer">
     <div class="container">
-      <p>&copy; 2026 我的博客. Powered by ❤️ and ☕</p>
+      <div class="footer-links">
+        <a href="#home" data-page="home">首页</a>
+        <a href="#blog" data-page="blog">文章</a>
+        <a href="#timeline" data-page="timeline">动态</a>
+        <a href="#guestbook" data-page="guestbook">留言</a>
+        <a href="#about" data-page="about">关于</a>
+        <a href="download.php">下载</a>
+      </div>
+      <p>&copy; 2026 风春桐海君. Built with ❤️ and ☕</p>
     </div>
   </footer>
 
   <button id="backToTop" class="back-to-top" aria-label="回到顶部">↑</button>
+
+  <!-- ===== 移动端底部导航栏 ===== -->
+  <nav class="bottom-nav" id="bottomNav">
+    <a href="#home" class="bottom-nav-item active" data-page="home">
+      <span class="bni-icon">🏠</span>
+      <span class="bni-label">首页</span>
+    </a>
+    <a href="#blog" class="bottom-nav-item" data-page="blog">
+      <span class="bni-icon">📝</span>
+      <span class="bni-label">文章</span>
+    </a>
+    <a href="#timeline" class="bottom-nav-item" data-page="timeline">
+      <span class="bni-icon">📡</span>
+      <span class="bni-label">动态</span>
+    </a>
+    <a href="#guestbook" class="bottom-nav-item" data-page="guestbook">
+      <span class="bni-icon">💬</span>
+      <span class="bni-label">留言</span>
+    </a>
+    <a href="#about" class="bottom-nav-item" data-page="about">
+      <span class="bni-icon">👤</span>
+      <span class="bni-label">关于</span>
+    </a>
+    <a href="download.php" class="bottom-nav-item">
+      <span class="bni-icon">📥</span>
+      <span class="bni-label">下载</span>
+    </a>
+  </nav>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="js/main.js"></script>
