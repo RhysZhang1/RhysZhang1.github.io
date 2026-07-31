@@ -1,14 +1,14 @@
 <?php
 /**
- * 动态 Sitemap 生成
- * 读取 posts/index.json 输出 XML
+ * 动态 Sitemap 生成 — 读取 posts/index.json 输出 XML
  */
+
+require_once __DIR__ . '/php/config.php';
+require_once __DIR__ . '/php/includes/security.php';
+sendSecurityHeaders();
 
 header('Content-Type: application/xml; charset=utf-8');
 
-$siteUrl = 'https://rhyszhang1.github.io';
-
-// 读取文章元数据
 $posts = [];
 $indexPath = __DIR__ . '/posts/index.json';
 if (file_exists($indexPath)) {
@@ -18,14 +18,14 @@ if (file_exists($indexPath)) {
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 
-// 静态页面
 $pages = [
-    ['loc' => $siteUrl . '/',               'priority' => '1.0', 'freq' => 'daily'],
-    ['loc' => $siteUrl . '/#blog',           'priority' => '0.8', 'freq' => 'daily'],
-    ['loc' => $siteUrl . '/#timeline',       'priority' => '0.5', 'freq' => 'weekly'],
-    ['loc' => $siteUrl . '/#guestbook',      'priority' => '0.5', 'freq' => 'weekly'],
-    ['loc' => $siteUrl . '/#about',          'priority' => '0.5', 'freq' => 'monthly'],
-    ['loc' => $siteUrl . '/download.php',    'priority' => '0.4', 'freq' => 'monthly'],
+    ['loc' => SITE_URL . '/',               'priority' => '1.0', 'freq' => 'daily'],
+    ['loc' => SITE_URL . '/#blog',           'priority' => '0.8', 'freq' => 'daily'],
+    ['loc' => SITE_URL . '/#timeline',       'priority' => '0.5', 'freq' => 'weekly'],
+    ['loc' => SITE_URL . '/#guestbook',      'priority' => '0.5', 'freq' => 'weekly'],
+    ['loc' => SITE_URL . '/#bottle',         'priority' => '0.6', 'freq' => 'daily'],
+    ['loc' => SITE_URL . '/#about',          'priority' => '0.5', 'freq' => 'monthly'],
+    ['loc' => SITE_URL . '/download.php',    'priority' => '0.4', 'freq' => 'monthly'],
 ];
 
 foreach ($pages as $p) {
@@ -36,9 +36,8 @@ foreach ($pages as $p) {
     echo '  </url>' . "\n";
 }
 
-// 文章页面
 foreach ($posts as $post) {
-    $url = $siteUrl . '/#post/' . htmlspecialchars($post['id'], ENT_XML1, 'UTF-8');
+    $url = SITE_URL . '/#post/' . htmlspecialchars($post['id'], ENT_XML1, 'UTF-8');
     echo '  <url>' . "\n";
     echo '    <loc>' . $url . '</loc>' . "\n";
     echo '    <lastmod>' . htmlspecialchars($post['date'], ENT_XML1, 'UTF-8') . '</lastmod>' . "\n";

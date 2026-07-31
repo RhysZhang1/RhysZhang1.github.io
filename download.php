@@ -4,8 +4,11 @@
  * 使用方式：把文件丢进 downloads/ 文件夹，页面自动展示，无需改代码
  */
 
+require_once __DIR__ . '/php/config.php';
+require_once __DIR__ . '/php/includes/security.php';
+sendSecurityHeaders();
+
 $downloadDir = __DIR__ . '/downloads';
-$siteTitle   = '下载中心';
 
 if (!is_dir($downloadDir)) {
     mkdir($downloadDir, 0755, true);
@@ -72,8 +75,8 @@ $theme = isset($_COOKIE['blog-theme']) ? $_COOKIE['blog-theme'] : 'light';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="下载中心 - 资源文件分享">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <title><?php echo $siteTitle; ?> — 风春桐海君</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>下载中心 — <?php echo htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8'); ?></title>
+  <link rel="stylesheet" href="css/style.css?v=20260731c">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -134,15 +137,15 @@ $theme = isset($_COOKIE['blog-theme']) ? $_COOKIE['blog-theme'] : 'light';
     .empty-downloads-icon { font-size: 4rem; margin-bottom: 1rem; }
     .empty-downloads h2 { font-size: 1.25rem; color: var(--text2); margin-bottom: 0.5rem; }
     .empty-downloads p { color: var(--text3); font-size: 0.9rem; }
-    @media (max-width: 768px) {
+
+    @media (max-width: 860px) {
+      main { padding-bottom: 4rem; }
       .file-table th:nth-child(3), .file-table td:nth-child(3) { display: none; }
       .file-table th, .file-table td { padding: 0.65rem 0.75rem; }
-      main { padding-bottom: 4rem; }
     }
   </style>
 </head>
 <body>
-  <!-- 导航栏（与首页保持一致） -->
   <header class="site-header">
     <div class="container">
       <a href="/" class="site-logo">
@@ -150,11 +153,12 @@ $theme = isset($_COOKIE['blog-theme']) ? $_COOKIE['blog-theme'] : 'light';
         风春桐海君
       </a>
       <nav class="site-nav">
-        <a href="index.html#home" class="nav-link">首页</a>
-        <a href="index.html#blog" class="nav-link">文章</a>
-        <a href="index.html#timeline" class="nav-link">动态</a>
-        <a href="index.html#guestbook" class="nav-link">留言</a>
-        <a href="index.html#about" class="nav-link">关于</a>
+        <a href="/" class="nav-link">首页</a>
+        <a href="/#blog" class="nav-link">文章</a>
+        <a href="/#timeline" class="nav-link">动态</a>
+        <a href="/#guestbook" class="nav-link">留言</a>
+        <a href="/#bottle" class="nav-link">漂流瓶</a>
+        <a href="/#about" class="nav-link">关于</a>
         <a href="download.php" class="nav-link active">下载</a>
       </nav>
       <div class="header-actions">
@@ -168,7 +172,6 @@ $theme = isset($_COOKIE['blog-theme']) ? $_COOKIE['blog-theme'] : 'light';
     </div>
   </header>
 
-  <!-- 主内容 -->
   <main style="flex:1;padding-top:var(--header);">
     <div class="download-hero">
       <div class="container">
@@ -216,7 +219,7 @@ $theme = isset($_COOKIE['blog-theme']) ? $_COOKIE['blog-theme'] : 'light';
                 <td class="file-size"><?php echo formatSize($file['size']); ?></td>
                 <td class="file-date"><?php echo date('Y-m-d H:i', $file['modified']); ?></td>
                 <td>
-                  <a href="<?php echo $file['download_url']; ?>"
+                  <a href="<?php echo htmlspecialchars($file['download_url']); ?>"
                      class="btn-download" download>
                     ⬇ 下载
                   </a>
@@ -230,62 +233,100 @@ $theme = isset($_COOKIE['blog-theme']) ? $_COOKIE['blog-theme'] : 'light';
     </div>
   </main>
 
-  <!-- ===== 移动端底部导航栏 ===== -->
+  <!-- 移动端底部导航栏（与 index.html 结构一致） -->
   <nav class="bottom-nav" id="bottomNav">
-    <a href="index.html#home" class="bottom-nav-item">🏠<span class="bni-label">首页</span></a>
-    <a href="index.html#blog" class="bottom-nav-item">📝<span class="bni-label">文章</span></a>
-    <a href="index.html#timeline" class="bottom-nav-item">📡<span class="bni-label">动态</span></a>
-    <a href="index.html#guestbook" class="bottom-nav-item">💬<span class="bni-label">留言</span></a>
-    <a href="index.html#about" class="bottom-nav-item">👤<span class="bni-label">关于</span></a>
-    <a href="download.php" class="bottom-nav-item active">📥<span class="bni-label">下载</span></a>
+    <a href="/#home" class="bottom-nav-item">
+      <span class="bni-icon">🏠</span>
+      <span class="bni-label">首页</span>
+    </a>
+    <a href="/#blog" class="bottom-nav-item">
+      <span class="bni-icon">📝</span>
+      <span class="bni-label">文章</span>
+    </a>
+    <a href="/#timeline" class="bottom-nav-item">
+      <span class="bni-icon">📡</span>
+      <span class="bni-label">动态</span>
+    </a>
+    <a href="/#guestbook" class="bottom-nav-item">
+      <span class="bni-icon">💬</span>
+      <span class="bni-label">留言</span>
+    </a>
+    <a href="/#bottle" class="bottom-nav-item">
+      <span class="bni-icon">🍾</span>
+      <span class="bni-label">瓶子</span>
+    </a>
+    <a href="/#about" class="bottom-nav-item">
+      <span class="bni-icon">👤</span>
+      <span class="bni-label">关于</span>
+    </a>
+    <a href="download.php" class="bottom-nav-item active">
+      <span class="bni-icon">📥</span>
+      <span class="bni-label">下载</span>
+    </a>
   </nav>
 
-  <!-- 页脚 -->
   <footer class="site-footer">
     <div class="container">
       <div class="footer-links">
-        <a href="index.html#home">首页</a>
-        <a href="index.html#blog">文章</a>
-        <a href="index.html#timeline">动态</a>
-        <a href="index.html#guestbook">留言</a>
-        <a href="index.html#about">关于</a>
+        <a href="/#home">首页</a>
+        <a href="/#blog">文章</a>
+        <a href="/#timeline">动态</a>
+        <a href="/#guestbook">留言</a>
+        <a href="/#bottle">漂流瓶</a>
+        <a href="/#about">关于</a>
         <a href="download.php">下载</a>
+        <a href="/feed.php" target="_blank">📡 RSS</a>
       </div>
       <p>&copy; 2026 风春桐海君. Built with ❤️ and ☕</p>
     </div>
   </footer>
 
-  <button id="backToTop" class="back-to-top" aria-label="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  <button id="backToTop" class="back-to-top" aria-label="回到顶部">↑</button>
 
   <script>
     function toggleTheme() {
       var current = document.documentElement.getAttribute('data-theme');
       var next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
-      document.cookie = 'blog-theme=' + next + ';path=/;max-age=31536000';
+      document.cookie = 'blog-theme=' + next + ';path=/;max-age=31536000;SameSite=Lax';
+      try { localStorage.setItem('blog-theme', next); } catch (e) {}
       var icon = document.querySelector('.theme-icon');
       if (icon) icon.textContent = next === 'dark' ? '☀️' : '🌙';
     }
 
-    // 移动端菜单
-    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-      document.querySelector('.site-nav').classList.toggle('open');
-    });
+    (function() {
+      var menuBtn = document.getElementById('mobileMenuBtn');
+      var nav = document.querySelector('.site-nav');
+      if (menuBtn && nav) {
+        menuBtn.addEventListener('click', function() {
+          nav.classList.toggle('open');
+          menuBtn.classList.toggle('open');
+        });
+        document.addEventListener('click', function(e) {
+          if (!menuBtn.contains(e.target) && !nav.contains(e.target)) {
+            nav.classList.remove('open');
+            menuBtn.classList.remove('open');
+          }
+        });
+      }
 
-    // 回到顶部
-    window.addEventListener('scroll', function() {
-      var btn = document.getElementById('backToTop');
-      if (btn) btn.classList.toggle('visible', window.scrollY > 400);
-    });
-    document.getElementById('backToTop').addEventListener('click', function() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+      var backBtn = document.getElementById('backToTop');
+      if (backBtn) {
+        window.addEventListener('scroll', function() {
+          backBtn.classList.toggle('visible', window.scrollY > 400);
+        });
+        backBtn.addEventListener('click', function() {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
 
-    // 滚动时 header 加阴影
-    window.addEventListener('scroll', function() {
       var header = document.querySelector('.site-header');
-      if (header) header.classList.toggle('scrolled', window.scrollY > 20);
-    });
+      if (header) {
+        window.addEventListener('scroll', function() {
+          header.classList.toggle('scrolled', window.scrollY > 20);
+        });
+      }
+    })();
   </script>
 </body>
 </html>

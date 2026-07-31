@@ -1,6 +1,18 @@
 /**
  * 风春桐海君 · 个人博客 — 主逻辑
  */
+
+// ===== 全局配置 =====
+const CONFIG = {
+  siteUrl: window.location.origin,
+  giscus: {
+    repo: 'RhysZhang1/RhysZhang1.github.io',
+    repoId: 'R_kgDOTf36Zg',
+    category: 'Announcements',
+    categoryId: 'DIC_kwDOTf36Zs4DBukF',
+  },
+};
+
 let postMeta = [];
 const postCache = {};
 
@@ -11,12 +23,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   initBackTop();
   initMobile();
   initReveal();
+  initLightbox();
 
   try {
     const r = await fetch('posts/index.json');
-    if (!r.ok) throw new Error();
+    if (!r.ok) throw new Error('HTTP ' + r.status);
     postMeta = await r.json();
-  } catch { postMeta = []; }
+  } catch (e) { console.warn('加载文章索引失败：', e); postMeta = []; }
 
   initRouter();
   initSearch();
@@ -30,13 +43,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ===== Theme =====
+function getCookie(name) {
+  const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+  return m ? decodeURIComponent(m[1]) : null;
+}
+function setThemeCookie(theme) {
+  document.cookie = 'blog-theme=' + theme + ';path=/;max-age=31536000;SameSite=Lax';
+}
 function initTheme() {
-  if (localStorage.getItem('blog-theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+  // cookie 为唯一事实来源（download.php 服务端读取），localStorage 作旧访客回退，两处保持一致
+  const theme = getCookie('blog-theme') || localStorage.getItem('blog-theme') || 'light';
+  if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+  localStorage.setItem('blog-theme', theme);
+  setThemeCookie(theme);
   updateThemeIcon();
   document.getElementById('themeToggle').addEventListener('click', () => {
     const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('blog-theme', next);
+    setThemeCookie(next);
     updateThemeIcon();
     updateGiscusTheme();
     toast(next === 'dark' ? '🌙 深色模式' : '☀️ 浅色模式');
@@ -97,6 +122,9 @@ function initRouter() {
     // TOC links: smooth scroll, never route
     const tocLink = e.target.closest('.toc-link');
     if (tocLink) { e.preventDefault(); const t = document.getElementById(tocLink.dataset.tocTarget); if (t) t.scrollIntoView({ behavior: 'smooth' }); return; }
+    // Heading anchors: smooth scroll, never route
+    const anchor = e.target.closest('.heading-anchor');
+    if (anchor) { e.preventDefault(); const t = document.getElementById(anchor.getAttribute('href').slice(1)); if (t) t.scrollIntoView({ behavior: 'smooth' }); return; }
     const link = e.target.closest('[data-page]');
     if (link) { e.preventDefault(); window.location.hash = '#' + link.dataset.page; return; }
     const card = e.target.closest('[data-post-id]');
@@ -114,14 +142,35 @@ function handleRoute() {
   else if (h === '#blog') { show('blog'); active('blog'); resetBlogHero(); renderPostList(postMeta); }
   else if (h === '#timeline') { show('timeline'); active('timeline'); renderTimeline(); }
   else if (h === '#guestbook') { show('guestbook'); active('guestbook'); renderGuestbook(); }
+  else if (h === '#bottle') { show('bottle'); active('bottle'); initBottle(); }
   else if (h === '#about') { show('about'); active('about'); }
   else if (h.startsWith('#tag/')) { showTagArchive(decodeURIComponent(h.slice(5))); active('blog'); }
   else if (h.startsWith('#post/')) { showPost(h.slice(6)); active('blog'); }
   else { show('home'); active('home'); }
+  updateMeta();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function show(name) { const p = document.getElementById(name + '-page'); if (p) { p.classList.add('active'); setTimeout(initReveal, 50); } }
 function active(name) { const l = document.querySelector(`.nav-link[data-page="${name}"]`); if (l) l.classList.add('active'); const b = document.querySelector(`.bottom-nav-item[data-page="${name}"]`); if (b) b.classList.add('active'); }
+
+// ===== SEO meta（社交分享卡片） =====
+function updateMeta() {
+  const h = window.location.hash || '#home';
+  let title = document.title;
+  let desc = document.querySelector('meta[name="description"]')?.content || '';
+  if (h.startsWith('#post/')) {
+    const p = postMeta.find(p => p.id === h.slice(6));
+    if (p) { title = p.title + ' — 风春桐海君'; desc = p.summary || desc; }
+  } else if (h.startsWith('#tag/')) {
+    title = decodeURIComponent(h.slice(5)) + ' — 风春桐海君';
+  }
+  const setMeta = (sel, val) => { const el = document.querySelector(sel); if (el) el.setAttribute('content', val); };
+  setMeta('meta[property="og:title"]', title);
+  setMeta('meta[property="og:description"]', desc);
+  setMeta('meta[name="twitter:title"]', title);
+  setMeta('meta[name="twitter:description"]', desc);
+  setMeta('meta[property="og:url"]', window.location.origin + window.location.pathname + window.location.hash);
+}
 
 // ===== Tag Archive =====
 function resetBlogHero() {
@@ -176,6 +225,12 @@ async function showPost(id) {
       if (hCounts[slug] !== undefined) { hCounts[slug]++; slug += '-' + hCounts[slug]; }
       else { hCounts[slug] = 0; }
       h.id = slug;
+      const a = document.createElement('a');
+      a.className = 'heading-anchor';
+      a.href = '#' + slug;
+      a.setAttribute('aria-label', '跳转到' + h.textContent);
+      a.textContent = '#';
+      h.appendChild(a);
     });
 
     // Build TOC and create sidebar layout (if enough headings)
@@ -202,8 +257,8 @@ async function showPost(id) {
       footerActions.insertAdjacentHTML('beforebegin', relatedHtml);
     }
 
-    addCopyBtns(); loadGiscus(id); initReadingBar(); fetchViewCount(id); setTimeout(initReveal, 100);
-  } catch { c.innerHTML = '<div class="empty-state"><span class="empty-state-icon">⚠️</span><p>加载失败</p></div>'; }
+    lazyLoadImages(c); addCopyBtns(); loadGiscus(id); initReadingBar(); fetchViewCount(id); setTimeout(initReveal, 100);
+  } catch (e) { console.warn('加载文章失败：', e); c.innerHTML = '<div class="empty-state"><span class="empty-state-icon">⚠️</span><p>加载失败</p></div>'; }
 }
 
 function initReadingBar() {
@@ -226,10 +281,10 @@ function mountGiscus(term, destId) {
     : 'https://giscus.app/themes/light.css';
   const s = document.createElement('script');
   s.src = 'https://giscus.app/client.js';
-  s.setAttribute('data-repo', 'RhysZhang1/RhysZhang1.github.io');
-  s.setAttribute('data-repo-id', 'R_kgDOTf36Zg');
-  s.setAttribute('data-category', 'Announcements');
-  s.setAttribute('data-category-id', 'DIC_kwDOTf36Zs4DBukF');
+  s.setAttribute('data-repo', CONFIG.giscus.repo);
+  s.setAttribute('data-repo-id', CONFIG.giscus.repoId);
+  s.setAttribute('data-category', CONFIG.giscus.category);
+  s.setAttribute('data-category-id', CONFIG.giscus.categoryId);
   s.setAttribute('data-mapping', 'specific');
   s.setAttribute('data-term', term);
   s.setAttribute('data-strict', '0');
@@ -318,7 +373,7 @@ function initTagFilter() {
 // ===== Typewriter (Hero) =====
 function initTypewriter() {
   const el = document.getElementById('heroTypewriter'); if (!el) return;
-  const phrases = ['欲买桂花同载酒，终不似，少年游', 'Python · Java · Linux · Artificial Intelligience', '前行不会带来失去，但会带来相遇', '这世上没有纯粹的自由，风也有吹到头的时候'];
+  const phrases = ['欲买桂花同载酒，终不似，少年游', 'Python · Java · Linux · Artificial Intelligence', '原神 · 星穹铁道 · 文学创作', '前行不会带来失去，但会带来相遇', '这世上没有纯粹的自由，风也有吹到头的时候'];
   let pi = 0, ci = 0, del = false, pause = false;
   const tick = () => {
     if (!el) return;
@@ -347,7 +402,7 @@ async function renderTimeline() {
       ${e.description ? `<div class="timeline-desc">${esc(e.description)}</div>` : ''}
     </div>`).join('');
     setTimeout(initReveal, 50);
-  } catch { c.innerHTML = '<div class="empty-state"><span class="empty-state-icon">⚠️</span><p>加载失败</p></div>'; }
+  } catch (e) { console.warn('加载时间线失败：', e); c.innerHTML = '<div class="empty-state"><span class="empty-state-icon">⚠️</span><p>加载失败</p></div>'; }
 }
 
 // ===== Guestbook =====
@@ -362,7 +417,7 @@ function renderGuestbook() {
         <div class="guestbook-message">${esc(m.message)}</div>
       </div></div>`).join('');
     setTimeout(initReveal, 50);
-  }).catch(() => {});
+  }).catch(e => { console.warn('加载留言数据失败：', e); });
   // Giscus provides the input form
   loadGuestbookGiscus();
 }
@@ -407,13 +462,21 @@ function initMobile() {
 function addCopyBtns() {
   document.querySelectorAll('.post-article-body pre').forEach(pre => {
     if (pre.querySelector('.copy-code-btn')) return;
+    // 语言标识：从 <code class="language-xxx"> 提取并标到 pre 上
+    const codeEl = pre.querySelector('code');
+    const lm = codeEl && (codeEl.className.match(/\blanguage-([\w+-]+)/) || codeEl.className.match(/\blang-([\w+-]+)/));
+    if (lm) { pre.classList.add('has-lang'); pre.dataset.lang = lm[1]; }
     const btn = document.createElement('button'); btn.className = 'copy-code-btn'; btn.textContent = '📋 复制';
     btn.onclick = async () => {
       const code = pre.querySelector('code'); if (!code) return;
-      try { await navigator.clipboard.writeText(code.textContent); btn.textContent = '✅'; btn.classList.add('copied'); toast('✅ 已复制'); setTimeout(() => { btn.textContent = '📋 复制'; btn.classList.remove('copied'); }, 2000); } catch { toast('❌ 复制失败'); }
+      try { await navigator.clipboard.writeText(code.textContent); btn.textContent = '✅'; btn.classList.add('copied'); toast('✅ 已复制'); setTimeout(() => { btn.textContent = '📋 复制'; btn.classList.remove('copied'); }, 2000); } catch (e) { console.warn('复制失败：', e); toast('❌ 复制失败'); }
     };
     pre.appendChild(btn);
   });
+}
+
+function lazyLoadImages(root) {
+  root.querySelectorAll('.post-article-body img').forEach(img => { img.loading = 'lazy'; img.decoding = 'async'; });
 }
 
 // ===== Toast =====
@@ -441,7 +504,172 @@ async function fetchViewCount(id) {
         meta.appendChild(span);
       }
     }
-  } catch { /* silently fail */ }
+  } catch (e) { console.warn('浏览量加载失败：', e); }
+}
+
+// ===== Bottle =====
+let bottleReady = false;
+function initBottle() {
+  if (bottleReady) return; // 只初始化一次，避免重复绑定监听器
+  bottleReady = true;
+  // Tab switching
+  const tabs = document.querySelectorAll('.bottle-tab');
+  const panels = { throw: document.getElementById('throwPanel'), pick: document.getElementById('pickPanel') };
+  tabs.forEach(t => {
+    t.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.remove('active'));
+      t.classList.add('active');
+      Object.values(panels).forEach(p => p?.classList.remove('active'));
+      const panel = panels[t.dataset.bottleTab];
+      if (panel) panel.classList.add('active');
+    });
+  });
+
+  // Character counter
+  const msgEl = document.getElementById('bottleMessage');
+  const countEl = document.getElementById('bottleCharCount');
+  if (msgEl && countEl) {
+    msgEl.addEventListener('input', () => { countEl.textContent = msgEl.value.length; });
+  }
+
+  // Throw button
+  const throwBtn = document.getElementById('throwBtn');
+  if (throwBtn) {
+    throwBtn.addEventListener('click', throwBottle);
+  }
+
+  // Pick button
+  const pickBtn = document.getElementById('pickBtn');
+  if (pickBtn) {
+    pickBtn.addEventListener('click', pickBottle);
+  }
+
+  // Fetch bottle count
+  fetchBottleCount();
+}
+
+async function fetchBottleCount() {
+  try {
+    const r = await fetch('php/bottle.php?action=count');
+    const data = await r.json();
+    const el = document.getElementById('bottleCount');
+    if (el && data.ok) el.textContent = data.count;
+  } catch (e) { console.warn('获取瓶子数失败：', e); }
+}
+
+async function throwBottle() {
+  const name = document.getElementById('bottleName').value.trim();
+  const message = document.getElementById('bottleMessage').value.trim();
+  const url = document.getElementById('bottleUrl').value.trim();
+  const fb = document.getElementById('throwFeedback');
+  const btn = document.getElementById('throwBtn');
+
+  if (!name) { fb.innerHTML = '<span style="color:#ef4444;">请填写昵称</span>'; return; }
+  if (!message) { fb.innerHTML = '<span style="color:#ef4444;">请填写内容</span>'; return; }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ 投递中...';
+  fb.innerHTML = '';
+
+  try {
+    const r = await fetch('php/bottle.php?action=throw', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, message, url }),
+    });
+    const data = await r.json();
+    if (data.ok) {
+      fb.innerHTML = '<span style="color:#10b981;">✅ ' + esc(data.message) + '</span>';
+      document.getElementById('bottleName').value = '';
+      document.getElementById('bottleMessage').value = '';
+      document.getElementById('bottleUrl').value = '';
+      document.getElementById('bottleCharCount').textContent = '0';
+      fetchBottleCount();
+    } else {
+      fb.innerHTML = '<span style="color:#ef4444;">⚠️ ' + esc(data.message) + '</span>';
+    }
+  } catch (e) {
+    console.warn('投瓶失败：', e);
+    fb.innerHTML = '<span style="color:#ef4444;">网络错误，请稍后再试</span>';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🌊 扔进海里';
+}
+
+async function pickBottle() {
+  const card = document.getElementById('pickCard');
+  const btn = document.getElementById('pickBtn');
+  const fb = document.getElementById('pickFeedback');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ 打捞中...';
+  fb.innerHTML = '';
+
+  try {
+    const r = await fetch('php/bottle.php?action=pick');
+    const data = await r.json();
+    if (data.ok && data.bottle) {
+      const b = data.bottle;
+      card.innerHTML = `
+        <div style="font-size:2.5rem;margin-bottom:.75rem;">🍾</div>
+        <div class="bottle-pick-message">${esc(b.message)}</div>
+        ${b.url ? `<a href="${esc(b.url)}" target="_blank" rel="noopener" class="bottle-pick-url">🔗 ${esc(b.url)}</a>` : ''}
+        <div class="bottle-pick-meta">
+          <span>— ${esc(b.name)}</span>
+          <span>${esc(b.date)}</span>
+        </div>
+        <button class="btn btn-outline" onclick="pickBottle()" style="margin-top:1rem;justify-content:center;">
+          🎣 再捞一个
+        </button>`;
+    } else {
+      card.innerHTML = `
+        <div style="font-size:3rem;margin-bottom:1rem;">🌊</div>
+        <p style="color:var(--text2);margin-bottom:1.25rem;">${esc(data.message || '海里暂时没有瓶子，先扔一个吧 🌊')}</p>
+        <button class="btn btn-primary btn-lg" onclick="pickBottle()" style="justify-content:center;">
+          🎣 捞一个
+        </button>`;
+    }
+  } catch (e) {
+    console.warn('捞瓶失败：', e);
+    fb.innerHTML = '<span style="color:#ef4444;">网络错误，请稍后再试</span>';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🎣 捞一个';
+  }
+}
+
+// ===== Lightbox（文章图片放大预览） =====
+let lightboxEl = null;
+function initLightbox() {
+  document.addEventListener('click', e => {
+    const img = e.target.closest('.post-article-body img');
+    if (!img || img.closest('a')) return; // 图片本身是链接时不拦截
+    openLightbox(img.src, img.alt || '');
+  });
+}
+function openLightbox(src, alt) {
+  if (!lightboxEl) {
+    lightboxEl = document.createElement('div');
+    lightboxEl.className = 'lightbox';
+    lightboxEl.innerHTML = '<button class="lightbox-close" aria-label="关闭">✕</button><figure class="lightbox-figure"><img alt=""><figcaption></figcaption></figure>';
+    document.body.appendChild(lightboxEl);
+    lightboxEl.addEventListener('click', e => {
+      if (e.target === lightboxEl || e.target.classList.contains('lightbox-close')) closeLightbox();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+  }
+  const img = lightboxEl.querySelector('img');
+  img.src = src; img.alt = alt;
+  const cap = lightboxEl.querySelector('figcaption');
+  cap.textContent = alt;
+  document.body.classList.add('no-scroll');
+  lightboxEl.classList.add('open');
+}
+function closeLightbox() {
+  if (!lightboxEl) return;
+  lightboxEl.classList.remove('open');
+  document.body.classList.remove('no-scroll');
 }
 
 // ===== TOC & Related Posts =====
@@ -463,7 +691,10 @@ function buildToc() {
   html += '</div><nav class="toc-list">';
   headings.forEach(h => {
     const level = h.tagName === 'H2' ? 'toc-h2' : 'toc-h3';
-    html += '<a class="toc-link ' + level + '" href="javascript:void(0)" data-toc-target="' + h.id + '">' + esc(h.textContent) + '</a>';
+    // 标题里可能注入了 .heading-anchor（文本 "#"），读取时剥离
+    const title = h.cloneNode(true);
+    title.querySelector('.heading-anchor')?.remove();
+    html += '<a class="toc-link ' + level + '" href="javascript:void(0)" data-toc-target="' + h.id + '">' + esc(title.textContent) + '</a>';
   });
   html += '</nav></div>';
   return html;

@@ -3,10 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="风春桐海君的个人博客 - 记录思考，分享技术">
+  <meta name="description" content="风春桐海君的个人博客 - 记录技术学习，分享游戏故事与文学创作">
+  <meta name="color-scheme" content="light dark">
+  <meta property="og:site_name" content="风春桐海君">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:url" content="/">
+  <meta property="og:title" content="风春桐海君 — 技术 · 游戏 · 文学">
+  <meta property="og:description" content="记录技术学习，分享游戏故事与文学创作">
+  <meta property="og:image" content="/Pic/a2.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="风春桐海君 — 技术 · 游戏 · 文学">
+  <meta name="twitter:description" content="记录技术学习，分享游戏故事与文学创作">
+  <meta name="twitter:image" content="/Pic/a2.webp">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <title>风春桐海君 — 技术博客</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="alternate" type="application/rss+xml" title="风春桐海君" href="/feed.php">
+  <title>风春桐海君 — 技术 · 游戏 · 文学</title>
+  <script>document.documentElement.classList.add('js')</script>
+  <!-- 缓存破坏：改动 css/js 后记得同步递增 ?v=（配合 .htaccess 缓存头避免旧样式残留） -->
+  <link rel="stylesheet" href="css/style.css?v=20260731c">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -25,6 +40,7 @@
         <a href="#blog" class="nav-link" data-page="blog">文章</a>
         <a href="#timeline" class="nav-link" data-page="timeline">动态</a>
         <a href="#guestbook" class="nav-link" data-page="guestbook">留言</a>
+        <a href="#bottle" class="nav-link" data-page="bottle">漂流瓶</a>
         <a href="#about" class="nav-link" data-page="about">关于</a>
         <a href="download.php" class="nav-link">下载</a>
       </nav>
@@ -60,7 +76,7 @@
           <span class="hp hp-6"></span>
         </div>
         <div class="hero-content">
-          <span class="hero-badge glass">✨ 个人技术博客</span>
+          <span class="hero-badge glass">✨ 个人技术博客 · 创作者</span>
           <h1 class="hero-title">
             <span class="hero-title-line">风春桐海君</span>
           </h1>
@@ -109,7 +125,7 @@
               <div class="sc-avatar">🌿</div>
             </div>
             <h3 class="sc-name">风春桐海君</h3>
-            <p class="sc-bio">热爱技术的开发者，在编程世界里探索无限可能。</p>
+            <p class="sc-bio">白天写代码，晚上写故事。热爱技术的开发者，也沉迷游戏剧情与古典文学。</p>
             <div class="sc-stats">
               <div class="sc-stat"><span class="sc-stat-num" id="statPosts">0</span>文章</div>
               <div class="sc-stat"><span class="sc-stat-num" id="statTags">0</span>标签</div>
@@ -117,7 +133,7 @@
             <div class="sc-social">
               <a href="https://github.com/RhysZhang1" target="_blank" rel="noopener" class="sc-social-link">🐙</a>
               <a href="mailto:rhys1233@outlook.cl" class="sc-social-link">✉️</a>
-              <a href="#" class="sc-social-link">📡</a>
+              <a href="/feed.php" class="sc-social-link" target="_blank" rel="noopener">📡</a>
             </div>
           </div>
 
@@ -196,6 +212,58 @@
     </section>
 
     <!-- ============================================================ -->
+    <!-- 漂流瓶 -->
+    <!-- ============================================================ -->
+    <section id="bottle-page" class="page">
+      <div class="container">
+        <div class="page-hero">
+          <h1 class="page-title reveal">🍾 漂流瓶</h1>
+          <p class="page-desc reveal">写一段话扔进海里，再捞一个陌生人的上来 · <span id="bottleCount" style="color:var(--accent);font-weight:600;">...</span> 个瓶子漂在海里</p>
+        </div>
+
+        <div class="bottle-tabs reveal">
+          <button class="bottle-tab active" data-bottle-tab="throw">✍️ 扔瓶子</button>
+          <button class="bottle-tab" data-bottle-tab="pick">🎣 捞瓶子</button>
+        </div>
+
+        <!-- 扔瓶子面板 -->
+        <div class="bottle-panel active" id="throwPanel">
+          <div class="glass-card" style="padding:1.5rem;">
+            <div class="bottle-field">
+              <label class="bottle-label">昵称 <span style="color:var(--text3);font-weight:400;">（会显示在瓶子上）</span></label>
+              <input type="text" id="bottleName" class="bottle-input" placeholder="你的名字" maxlength="20" autocomplete="off">
+            </div>
+            <div class="bottle-field">
+              <label class="bottle-label">内容 <span style="color:var(--accent);">*</span></label>
+              <textarea id="bottleMessage" class="bottle-textarea" placeholder="想说点什么？一句问候、一段想法、一个秘密..." maxlength="500" rows="4"></textarea>
+              <div class="bottle-counter"><span id="bottleCharCount">0</span>/500</div>
+            </div>
+            <div class="bottle-field">
+              <label class="bottle-label">链接 <span style="color:var(--text3);font-weight:400;">（选填，分享一个网址）</span></label>
+              <input type="text" id="bottleUrl" class="bottle-input" placeholder="https://..." maxlength="500" autocomplete="off">
+            </div>
+            <button class="btn btn-primary btn-lg" id="throwBtn" style="width:100%;justify-content:center;margin-top:.5rem;">
+              🌊 扔进海里
+            </button>
+            <div class="bottle-feedback" id="throwFeedback"></div>
+          </div>
+        </div>
+
+        <!-- 捞瓶子面板 -->
+        <div class="bottle-panel" id="pickPanel">
+          <div class="glass-card" id="pickCard" style="padding:2rem;text-align:center;">
+            <div style="font-size:3rem;margin-bottom:1rem;">🍾</div>
+            <p style="color:var(--text2);margin-bottom:1.25rem;">点击按钮随机捞一个漂流瓶</p>
+            <button class="btn btn-primary btn-lg" id="pickBtn" style="justify-content:center;">
+              🎣 捞一个
+            </button>
+            <div class="bottle-feedback" id="pickFeedback"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
     <!-- 关于 -->
     <!-- ============================================================ -->
     <section id="about-page" class="page">
@@ -207,7 +275,7 @@
           </div>
           <h1 class="about-name">风春桐海君</h1>
           <p class="about-tagline">热爱技术的开发者 / 写作者</p>
-          <p class="about-desc">从 Python 数据科学到 Java 企业开发，从 Linux 系统管理到 Vim 编辑器哲学。这个博客是我记录学习笔记、分享实战经验的空间。</p>
+          <p class="about-desc">从 Python 数据科学到 Java 企业开发，从 Linux 系统管理到 Vim 编辑器哲学。也沉迷游戏剧情与古典文学，用代码和文字记录这个时代的故事。</p>
         </div>
 
         <div class="about-grid">
@@ -252,13 +320,25 @@
                 <span class="cl-text">Email</span>
                 <span class="cl-arrow">→</span>
               </a>
-              <a href="#" class="contact-link">
+              <a href="/feed.php" class="contact-link">
                 <span class="cl-icon">📡</span>
                 <span class="cl-text">RSS</span>
                 <span class="cl-arrow">→</span>
               </a>
             </div>
           </div>
+
+          <div class="about-item glass-card reveal">
+            <div class="about-item-icon">✍️</div>
+            <h3>创作方向</h3>
+            <div class="create-list">
+              <span class="create-item">🎮 游戏剧情</span>
+              <span class="create-item">📜 古典诗词</span>
+              <span class="create-item">🌏 诗歌翻译</span>
+              <span class="create-item">🖋️ 二次创作</span>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -272,8 +352,10 @@
         <a href="#blog" data-page="blog">文章</a>
         <a href="#timeline" data-page="timeline">动态</a>
         <a href="#guestbook" data-page="guestbook">留言</a>
+        <a href="#bottle" data-page="bottle">漂流瓶</a>
         <a href="#about" data-page="about">关于</a>
         <a href="download.php">下载</a>
+        <a href="/feed.php" target="_blank">📡 RSS</a>
       </div>
       <p>&copy; 2026 风春桐海君. Built with ❤️ and ☕</p>
     </div>
@@ -299,6 +381,10 @@
       <span class="bni-icon">💬</span>
       <span class="bni-label">留言</span>
     </a>
+    <a href="#bottle" class="bottom-nav-item" data-page="bottle">
+      <span class="bni-icon">🍾</span>
+      <span class="bni-label">瓶子</span>
+    </a>
     <a href="#about" class="bottom-nav-item" data-page="about">
       <span class="bni-icon">👤</span>
       <span class="bni-label">关于</span>
@@ -309,7 +395,7 @@
     </a>
   </nav>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+  <script src="js/main.js?v=20260731c"></script>
 </body>
 </html>
