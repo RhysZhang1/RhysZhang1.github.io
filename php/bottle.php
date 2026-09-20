@@ -6,11 +6,16 @@
  *
  * 安全措施：
  *   - 输入校验（昵称/内容长度、URL 格式）
- *   - IP 频率限制（每 IP 每分钟最多 1 次投瓶）
+ *   - IP 频率限制（投瓶每 IP 每分钟 1 次；捞瓶每 IP 每分钟 10 次）
  *   - 数据文件大小上限
+ *   - 数据文件读-改-写全程 flock 独占锁（并发投瓶/捞瓶不丢数据）
  */
 
+require_once __DIR__ . '/includes/security.php';
+require_once __DIR__ . '/includes/json_store.php';
+sendSecurityHeaders();
 header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store');
 
 $dataFile      = __DIR__ . '/../data/bottles.json';
 $rateLimitFile = __DIR__ . '/../data/bottle_ratelimit.json';
@@ -18,12 +23,12 @@ $action        = $_GET['action'] ?? '';
 
 // ---- 统计瓶子数（GET）----
 if ($action === 'count') {
-    $bottles = [];
-    if (file_exists($dataFile)) {
-        $content = file_get_contents($dataFile);
-        if ($content !== false) {
-            $bottles = json_decode($content, true) ?? [];
-        }
+    $readOk = false;
+    $bottles = jsonStoreRead($dataFile, [], $readOk);
+    if (!$readOk) {
+        http_response_code(503);
+        echo json_encode(['ok' => false, 'message' => '数据暂时不可用']);
+        exit;
     }
     echo json_encode(['ok' => true, 'count' => count($bottles)]);
     exit;
@@ -31,16 +36,50 @@ if ($action === 'count') {
 
 // ---- 捞瓶子（GET）----
 if ($action === 'pick') {
-    $bottles = [];
-    if (file_exists($dataFile)) {
-        $content = file_get_contents($dataFile);
-        if ($content !== false) {
-            $bottles = json_decode($content, true) ?? [];
-        }
+    $readOk = false;
+    $bottles = jsonStoreRead($dataFile, [], $readOk);
+    if (!$readOk) {
+        http_response_code(503);
+        echo json_encode(['ok' => false, 'message' => '数据暂时不可用']);
+        exit;
     }
 
     if (empty($bottles)) {
         echo json_encode(['ok' => false, 'message' => '海里还没有瓶子，扔第一个吧 🌊']);
+        exit;
+    }
+
+    // ---- 频率限制：每 IP 每分钟最多 10 次捞瓶（防脚本批量扫库）----
+    // 独立限流文件，与投瓶的 1 次/分钟互不干扰；检查+记录在锁内完成，避免并发绕过
+    $ip     = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $ipHash = hash('sha256', $ip . 'bottle-pick-rl-2026');
+    $now    = time();
+    $pickRateLimitFile = __DIR__ . '/../data/bottle_pick_ratelimit.json';
+    $allowed = false;
+    $rateUpdated = jsonStoreUpdate($pickRateLimitFile, function ($rateLimit) use ($ipHash, $now, &$allowed) {
+        $rateLimit = array_values(array_filter($rateLimit, fn($e) => is_array($e) && ($e['ts'] ?? 0) > $now - 120));
+
+        $recent = array_filter($rateLimit, fn($e) => ($e['ip'] ?? '') === $ipHash && ($e['ts'] ?? 0) > $now - 60);
+        if (count($recent) >= 10) {
+            $allowed = false;
+            return null; // 不写回
+        }
+
+        $rateLimit[] = ['ip' => $ipHash, 'ts' => $now];
+        if (count($rateLimit) > 200) {
+            $rateLimit = array_slice($rateLimit, -200);
+        }
+        $allowed = true;
+        return $rateLimit;
+    });
+    if (!$rateUpdated) {
+        http_response_code(503);
+        echo json_encode(['ok' => false, 'message' => '服务暂时不可用']);
+        exit;
+    }
+    if (!$allowed) {
+        http_response_code(429);
+        echo json_encode(['ok' => false, 'message' => '捞得太频繁了，稍等片刻再试']);
         exit;
     }
 
@@ -89,7 +128,8 @@ if ($msgLen < 1 || $msgLen > 500) {
 }
 
 if ($url !== '') {
-    if (mb_strlen($url) > 500 || !preg_match('#^https?://.+#i', $url)) {
+    $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+    if (mb_strlen($url) > 500 || !filter_var($url, FILTER_VALIDATE_URL) || !in_array($scheme, ['http', 'https'], true)) {
         http_response_code(400);
         echo json_encode(['ok' => false, 'message' => '链接格式不正确，需要以 http:// 或 https:// 开头']);
         exit;
@@ -97,37 +137,38 @@ if ($url !== '') {
 }
 
 // ---- 频率限制：每 IP 每分钟最多 1 次投瓶 ----
-// 只存加盐哈希，数据文件不落原始 IP
+// 只存加盐哈希，数据文件不落原始 IP；检查+记录在锁内完成，避免并发绕过
 $ip     = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 $ipHash = hash('sha256', $ip . 'bottle-rl-2026');
 $now    = time();
-$rateLimit = [];
-if (file_exists($rateLimitFile)) {
-    $content = file_get_contents($rateLimitFile);
-    if ($content !== false) {
-        $rateLimit = json_decode($content, true) ?? [];
+$wait   = 0;
+$rateUpdated = jsonStoreUpdate($rateLimitFile, function ($rateLimit) use ($ipHash, $now, &$wait) {
+    $rateLimit = array_values(array_filter($rateLimit, fn($e) => is_array($e) && ($e['ts'] ?? 0) > $now - 120));
+
+    $recent = array_filter($rateLimit, fn($e) => ($e['ip'] ?? '') === $ipHash && ($e['ts'] ?? 0) > $now - 60);
+    if (!empty($recent)) {
+        $wait = 60 - ($now - max(array_column($recent, 'ts')));
+        return null; // 不写回，拒绝本次投递
     }
+
+    $rateLimit[] = ['ip' => $ipHash, 'ts' => $now];
+    if (count($rateLimit) > 200) {
+        $rateLimit = array_slice($rateLimit, -200);
+    }
+    return $rateLimit;
+});
+if (!$rateUpdated) {
+    http_response_code(503);
+    echo json_encode(['ok' => false, 'message' => '服务暂时不可用']);
+    exit;
 }
-
-$rateLimit = array_values(array_filter($rateLimit, fn($e) => is_array($e) && ($e['ts'] ?? 0) > $now - 120));
-
-$recent = array_filter($rateLimit, fn($e) => ($e['ip'] ?? '') === $ipHash && ($e['ts'] ?? 0) > $now - 60);
-if (!empty($recent)) {
-    $wait = 60 - ($now - max(array_column($recent, 'ts')));
+if ($wait > 0) {
     http_response_code(429);
     echo json_encode(['ok' => false, 'message' => "请等待 {$wait} 秒后再投"]);
     exit;
 }
 
-// ---- 保存瓶子 ----
-$bottles = [];
-if (file_exists($dataFile)) {
-    $content = file_get_contents($dataFile);
-    if ($content !== false) {
-        $bottles = json_decode($content, true) ?? [];
-    }
-}
-
+// ---- 保存瓶子（读+追加在锁内完成，并发不丢数据）----
 $bottle = [
     'id'      => bin2hex(random_bytes(8)),
     'name'    => $name,
@@ -137,19 +178,18 @@ $bottle = [
     'ip_hash' => hash('sha256', $ip . 'bottle-salt-2026'),
 ];
 
-$bottles[] = $bottle;
-
-if (count($bottles) > 2000) {
-    $bottles = array_slice($bottles, -2000);
+$saved = jsonStoreUpdate($dataFile, function ($bottles) use ($bottle) {
+    $bottles[] = $bottle;
+    if (count($bottles) > 2000) {
+        $bottles = array_slice($bottles, -2000);
+    }
+    return $bottles;
+});
+if (!$saved) {
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'message' => '保存失败，请稍后再试']);
+    exit;
 }
-
-file_put_contents($dataFile, json_encode($bottles, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
-
-$rateLimit[] = ['ip' => $ipHash, 'ts' => $now];
-if (count($rateLimit) > 200) {
-    $rateLimit = array_slice($rateLimit, -200);
-}
-file_put_contents($rateLimitFile, json_encode($rateLimit), LOCK_EX);
 
 http_response_code(201);
 echo json_encode(['ok' => true, 'message' => '瓶子已扔进海里 🌊']);

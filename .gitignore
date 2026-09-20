@@ -1,0 +1,30 @@
+# 本地私有资料夹（不会上传到网站，仅本地使用）
+/文章/
+
+# 本地部署凭据（严禁提交或同步到网站目录）
+/ssh_id_rsa
+/ssh -i *.txt
+
+# 运行时数据（PHP 动态生成，不纳入版本控制）
+data/counter.json
+data/ratelimit.json
+data/bottle_ratelimit.json
+data/bottle_pick_ratelimit.json
+data/bottles.json
+
+# 书籍实体文件（受版权保护的商业作品，仓库只保留目录索引与访问规则）
+books/*.epub
+books/*.pdf
+books/*.txt
+
+# 下载仓库（大文件，不入库）
+/downloads/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 编辑器 / IDE
+.idea/
+.vscode/
+*.swp

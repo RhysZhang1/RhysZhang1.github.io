@@ -3,52 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="风春桐海君的个人博客 - 记录技术学习，分享游戏故事与文学创作">
-  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="风春桐海君的私人创作档案馆：记录游戏故事、文学创作与沿途所思。">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#090b10">
   <meta property="og:site_name" content="风春桐海君">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="zh_CN">
-  <meta property="og:url" content="/">
-  <meta property="og:title" content="风春桐海君 — 技术 · 游戏 · 文学">
-  <meta property="og:description" content="记录技术学习，分享游戏故事与文学创作">
-  <meta property="og:image" content="/Pic/a2.webp">
+  <!-- og:url 必须是绝对地址（社交抓取器不执行 JS，这里写死线上域名） -->
+  <meta property="og:url" content="https://7250000.xyz/">
+  <meta property="og:title" content="风春桐海君 — 游戏 · 故事 · 星辰">
+  <meta property="og:description" content="一个开发者写给游戏、故事与星辰的私人档案馆。">
+  <meta property="og:image" content="https://7250000.xyz/Pic/og-archive.png">
+  <meta property="og:image:width" content="1672">
+  <meta property="og:image:height" content="941">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="风春桐海君 — 技术 · 游戏 · 文学">
-  <meta name="twitter:description" content="记录技术学习，分享游戏故事与文学创作">
-  <meta name="twitter:image" content="/Pic/a2.webp">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="twitter:title" content="风春桐海君 — 游戏 · 故事 · 星辰">
+  <meta name="twitter:description" content="一个开发者写给游戏、故事与星辰的私人档案馆。">
+  <meta name="twitter:image" content="https://7250000.xyz/Pic/og-archive.png">
+  <link rel="icon" href="/Pic/icon.jpg" type="image/jpeg">
+  <link rel="canonical" href="https://7250000.xyz/">
   <link rel="alternate" type="application/rss+xml" title="风春桐海君" href="/feed.php">
-  <title>风春桐海君 — 技术 · 游戏 · 文学</title>
+  <title>风春桐海君 — 游戏 · 故事 · 星辰</title>
   <script>document.documentElement.classList.add('js')</script>
   <!-- 缓存破坏：改动 css/js 后记得同步递增 ?v=（配合 .htaccess 缓存头避免旧样式残留） -->
-  <link rel="stylesheet" href="css/style.css?v=20260731c">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=20260920a">
+  <!-- 字体：googleapis/gstatic 大陆不可达，使用 fonts.loli.net 镜像（CSP 中两者都保留，换回时无需改配置） -->
+  <link rel="preconnect" href="https://fonts.loli.net">
+  <link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+  <link href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- 背景层：网格底纹 · 粒子连线 · 浮动数学符号 · 阿帽意象（羽毛/枫叶/风痕） -->
+  <div class="grid-bg"></div>
+  <canvas id="particleCanvas" aria-hidden="true"></canvas>
+  <div class="math-floaters" id="mathFloaters" aria-hidden="true"></div>
+  <div class="wm-floaters" id="wmFloaters" aria-hidden="true"></div>
+
+  <!-- 鼠标效果：暖金跟随圆点 + 缓动拖尾光环 -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  <!-- SVG 图标库（stroke 风格，随 currentColor 变色） -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="i-home" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></g></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></g></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></g></symbol>
+    <symbol id="i-message" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></g></symbol>
+    <symbol id="i-bottle" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6"/><path d="M10 2v3.6c0 .8-.5 1.5-1.2 1.9C7.2 8.5 6 10.3 6 12.4V19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-6.6c0-2.1-1.2-3.9-2.8-4.9a2.3 2.3 0 0 1-1.2-1.9V2"/></g></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></g></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></g></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></g></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></g></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></g></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 12.4 21.6a2 2 0 0 1-2.8 0L2 14V2h12l6.6 6.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.5"/></g></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></g></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></g></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3z"/></g></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></g></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></g></symbol>
+    <symbol id="i-rss" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></g></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></g></symbol>
+    <symbol id="i-anchor" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v13"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></g></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></g></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></g></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></g></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.6 12 20l-7.5-7.4A5 5 0 1 1 12 6.1a5 5 0 1 1 7.5 6.5z"/></g></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></g></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></g></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></g></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></g></symbol>
+    <symbol id="i-maximize" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></g></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></g></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></g></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></g></symbol>
+    <symbol id="i-command" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6V3a3 3 0 1 0-3 3v12a3 3 0 1 0 3-3M6 15h3a3 3 0 1 0-3-3v3m12 0h-3a3 3 0 1 0 3 3v-3m-9-3V6"/></g></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></g></symbol>
+    <symbol id="i-corner-up-left" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></g></symbol>
+    <!-- 阿帽专区意象：羽毛 · 枫叶 · 炉火 · 提线 · 玩偶 · 风 · 苦茶 · 斗笠 -->
+    <symbol id="i-feather" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 12.2a6 6 0 0 0-8.5-8.4L5 10.5V19h8.5z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></g></symbol>
+    <symbol id="i-maple" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M12 9 7 5l1.5 6L4 10l4 4-3 1.5 5.5 2.2"/><path d="m12 9 5-4-1.5 6 4.5-1-4 4 3 1.5-5.5 2.2"/></g></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></g></symbol>
+    <symbol id="i-strings" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18"/><path d="M7 3v6M12 3v8M17 3v6"/><circle cx="7" cy="11.5" r="2"/><circle cx="12" cy="13.5" r="2"/><circle cx="17" cy="11.5" r="2"/></g></symbol>
+    <symbol id="i-doll" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="6" r="3.5"/><rect x="7" y="10" width="10" height="7.5" rx="3"/><path d="M9.5 17.5V21M14.5 17.5V21"/></g></symbol>
+    <symbol id="i-wind" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 12h15a3 3 0 1 1-3 3"/><path d="M3 16h8"/></g></symbol>
+    <symbol id="i-tea" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.5v3M12 2.5v3"/></g></symbol>
+    <symbol id="i-hat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17.5h20"/><path d="M12 4c4 0 8 5.5 9 13.5H3C4 9.5 8 4 12 4z"/><path d="M12 4v13.5"/></g></symbol>
+  </svg>
+
   <div class="reading-progress" id="readingProgress"></div>
 
   <!-- ===== 导航栏 ===== -->
   <header class="site-header">
     <div class="container nav-container">
       <a href="/" class="site-logo">
-        <span class="site-logo-icon">🌿</span>
+        <img src="Pic/icon.jpg" alt="" class="site-logo-img">
         <span class="site-logo-text">风春桐海君</span>
       </a>
-      <nav class="site-nav">
-        <a href="#home" class="nav-link active" data-page="home">首页</a>
-        <a href="#blog" class="nav-link" data-page="blog">文章</a>
-        <a href="#timeline" class="nav-link" data-page="timeline">动态</a>
-        <a href="#guestbook" class="nav-link" data-page="guestbook">留言</a>
-        <a href="#bottle" class="nav-link" data-page="bottle">漂流瓶</a>
-        <a href="#about" class="nav-link" data-page="about">关于</a>
-        <a href="download.php" class="nav-link">下载</a>
+      <nav class="site-nav" id="siteNav" aria-label="主导航">
+        <a href="#home" class="nav-link active" data-page="home" data-idx="01" aria-current="page">首页</a>
+        <a href="#blog" class="nav-link" data-page="blog" data-idx="02">文章</a>
+        <a href="#timeline" class="nav-link" data-page="timeline" data-idx="03">动态</a>
+        <a href="#guestbook" class="nav-link" data-page="guestbook" data-idx="04">留言</a>
+        <a href="#bottle" class="nav-link" data-page="bottle" data-idx="05">漂流瓶</a>
+        <a href="#about" class="nav-link" data-page="about" data-idx="06">关于</a>
+        <a href="#wanderer" class="nav-link nav-wanderer" data-page="wanderer" data-idx="07">阿帽</a>
+        <a href="download.php" class="nav-link nav-utility" data-idx="08">下载</a>
+        <a href="reader.php" class="nav-link" data-idx="09">阅读</a>
       </nav>
       <div class="header-actions">
-        <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
-          <span class="theme-icon">🌙</span>
+        <button class="language-toggle" id="languageToggle" type="button" aria-label="Switch to English">
+          <span data-lang-choice="zh">中</span><i></i><span data-lang-choice="en">EN</span>
         </button>
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
+        <button class="cmd-trigger" id="cmdKTrigger" aria-label="搜索 (Ctrl+K)">
+          <svg class="ic"><use href="#i-search"/></svg><span class="cmd-trigger-text">搜索</span><kbd id="cmdKShortcut">⌘K</kbd>
+        </button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="打开菜单" aria-controls="siteNav" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -63,39 +133,61 @@
     <!-- ============================================================ -->
     <section id="home-page" class="page active">
 
-      <!-- Hero 区域：背景图 + 浮动光斑 -->
+      <!-- Hero 区域：极光流层 + 旋转光环 + 浮动光斑 -->
       <div class="hero">
-        <div class="hero-bg"></div>
-        <div class="hero-overlay"></div>
+        <div class="hero-ring ring-1"><div class="ring-dot"></div></div>
+        <div class="hero-ring ring-2"><div class="ring-dot"></div></div>
+        <div class="hero-aurora"></div>
         <div class="hero-particles">
           <span class="hp hp-1"></span>
           <span class="hp hp-2"></span>
           <span class="hp hp-3"></span>
-          <span class="hp hp-4"></span>
-          <span class="hp hp-5"></span>
-          <span class="hp hp-6"></span>
         </div>
         <div class="hero-content">
-          <span class="hero-badge glass">✨ 个人技术博客 · 创作者</span>
+          <span class="hero-badge">FENGCHUN TONGHAI · ARCHIVE 7250000</span>
           <h1 class="hero-title">
             <span class="hero-title-line">风春桐海君</span>
           </h1>
           <div class="hero-typewriter">
             <span id="heroTypewriter"></span><span class="cursor">|</span>
           </div>
-          <p class="hero-subtitle">长风破浪会有时，直挂云帆济沧海</p>
+          <p class="hero-lead">一个开发者写给游戏、故事与星辰的私人档案馆。</p>
+          <div class="hero-topics" aria-label="主要创作方向">
+            <span>游戏叙事</span><span>文学创作</span><span>沿途所思</span>
+          </div>
           <div class="hero-stats">
             <div class="hero-stat"><span class="hs-num" id="statPosts2">0</span><span class="hs-label">文章</span></div>
             <div class="hero-stat"><span class="hs-num" id="statTags2">0</span><span class="hs-label">标签</span></div>
             <div class="hero-stat"><span class="hs-num" id="statWords">0</span><span class="hs-label">字</span></div>
           </div>
           <div class="hero-actions">
-            <a href="#blog" class="btn btn-primary btn-lg" data-page="blog">📖 浏览文章</a>
-            <a href="download.php" class="btn btn-glass">📥 下载中心</a>
-            <a href="#about" class="btn btn-glass" data-page="about">👨‍💻 关于我</a>
+            <a href="#blog" class="btn btn-primary btn-lg" data-page="blog"><svg class="ic"><use href="#i-book"/></svg>进入故事</a>
+            <a href="reader.php" class="btn btn-glass"><svg class="ic"><use href="#i-book"/></svg>打开书房</a>
           </div>
+          <p class="hero-note">长风破浪会有时，直挂云帆济沧海</p>
         </div>
-        <!-- 去掉向下滚动文字 -->
+      </div>
+
+      <!-- 跑马灯：符号 × 文学 × 哲学 -->
+      <div class="marquee-strip">
+        <div class="marquee-content">
+          <span class="marquee-item"><span class="m-cyan">∑</span> 我们由星辰所造，终将归于星辰</span>
+          <span class="marquee-item"><span class="m-gold">&lt;/&gt;</span> 用代码与文字记录时代</span>
+          <span class="marquee-item"><span class="m-cyan">λx.x</span> 长风破浪会有时</span>
+          <span class="marquee-item"><span class="m-gold">e<sup>iπ</sup>+1=0</span> 旅途本身就是答案</span>
+          <span class="marquee-item"><span class="m-cyan">∫</span> 森林会记住一切</span>
+          <span class="marquee-item"><span class="m-gold">git commit -m "new story"</span> 在无限的故事里寻找有限的答案</span>
+          <span class="marquee-item"><span class="m-cyan">∇×E=-∂B/∂t</span> 风起时，草木皆有所向</span>
+          <span class="marquee-item"><span class="m-gold">∞</span> 前行不会带来失去，但会带来相遇</span>
+          <span class="marquee-item"><span class="m-cyan">∑</span> 我们由星辰所造，终将归于星辰</span>
+          <span class="marquee-item"><span class="m-gold">&lt;/&gt;</span> 用代码与文字记录时代</span>
+          <span class="marquee-item"><span class="m-cyan">λx.x</span> 长风破浪会有时</span>
+          <span class="marquee-item"><span class="m-gold">e<sup>iπ</sup>+1=0</span> 旅途本身就是答案</span>
+          <span class="marquee-item"><span class="m-cyan">∫</span> 森林会记住一切</span>
+          <span class="marquee-item"><span class="m-gold">git commit -m "new story"</span> 在无限的故事里寻找有限的答案</span>
+          <span class="marquee-item"><span class="m-cyan">∇×E=-∂B/∂t</span> 风起时，草木皆有所向</span>
+          <span class="marquee-item"><span class="m-gold">∞</span> 前行不会带来失去，但会带来相遇</span>
+        </div>
       </div>
 
       <!-- 首页内容：双栏 -->
@@ -107,7 +199,7 @@
             <h2 class="section-title">
               <span class="accent-bar"></span>最新文章
             </h2>
-            <p class="section-sub">最近更新的技术分享与学习心得</p>
+            <p class="section-sub">新近写下的游戏故事、文学创作与随感</p>
           </div>
           <div class="post-grid" id="homePostGrid"></div>
           <div class="view-all reveal">
@@ -122,24 +214,24 @@
         <aside class="home-sidebar">
           <div class="sidebar-card glass-card reveal">
             <div class="sc-avatar-ring">
-              <div class="sc-avatar">🌿</div>
+              <img src="Pic/icon.jpg" alt="风春桐海君" class="sc-avatar-img">
             </div>
             <h3 class="sc-name">风春桐海君</h3>
-            <p class="sc-bio">白天写代码，晚上写故事。热爱技术的开发者，也沉迷游戏剧情与古典文学。</p>
+            <p class="sc-bio">白天写代码，晚上写故事。在虚构世界里寻找真实，也用文字打捞沿途的时间。</p>
             <div class="sc-stats">
               <div class="sc-stat"><span class="sc-stat-num" id="statPosts">0</span>文章</div>
               <div class="sc-stat"><span class="sc-stat-num" id="statTags">0</span>标签</div>
             </div>
             <div class="sc-social">
-              <a href="https://github.com/RhysZhang1" target="_blank" rel="noopener" class="sc-social-link">🐙</a>
-              <a href="mailto:rhys1233@outlook.cl" class="sc-social-link">✉️</a>
-              <a href="/feed.php" class="sc-social-link" target="_blank" rel="noopener">📡</a>
+              <a href="https://github.com/RhysZhang1" target="_blank" rel="noopener" class="sc-social-link" aria-label="GitHub"><svg class="ic"><use href="#i-github"/></svg></a>
+              <a href="mailto:rhys1233@outlook.cl" class="sc-social-link" aria-label="Email"><svg class="ic"><use href="#i-mail"/></svg></a>
+              <a href="/feed.php" class="sc-social-link" target="_blank" rel="noopener" aria-label="RSS"><svg class="ic"><use href="#i-rss"/></svg></a>
             </div>
           </div>
 
           <div class="widget glass-card reveal">
             <div class="widget-head">
-              <span class="widget-icon">📝</span>
+              <span class="widget-icon"><svg class="ic"><use href="#i-book"/></svg></span>
               <h3 class="widget-title">最近文章</h3>
             </div>
             <ul class="widget-list" id="recentPostsList"></ul>
@@ -147,13 +239,21 @@
 
           <div class="widget glass-card reveal">
             <div class="widget-head">
-              <span class="widget-icon">🏷️</span>
+              <span class="widget-icon"><svg class="ic"><use href="#i-tag"/></svg></span>
               <h3 class="widget-title">标签云</h3>
             </div>
             <div class="tag-cloud" id="tagCloud"></div>
           </div>
         </aside>
       </div>
+
+      <!-- 哲学语录 -->
+      <div class="philosophy-quote reveal">
+        <p class="pq-text">「世界上只有一种真正的英雄主义，那就是认清生活的真相之后，依然热爱生活。」</p>
+        <p class="pq-src">罗曼·罗兰</p>
+      </div>
+
+      <div class="equation-display">e<sup>iπ</sup> + 1 = 0 &nbsp;|&nbsp; <span class="e-cyan">∇ × E = -∂B/∂t</span> &nbsp;|&nbsp; <span class="e-cyan">iℏ ∂ψ/∂t = Ĥψ</span></div>
     </section>
 
     <!-- ============================================================ -->
@@ -162,16 +262,23 @@
     <section id="blog-page" class="page">
       <div class="container">
         <div class="page-hero">
-          <h1 class="page-title reveal">📝 全部文章</h1>
+          <h1 class="page-title reveal"><svg class="ic"><use href="#i-book"/></svg>全部文章</h1>
           <p class="page-desc reveal">记录游戏故事、文学创作与随感杂记</p>
         </div>
         <div class="search-bar reveal">
-          <input type="text" id="searchInput" placeholder="搜索文章标题、摘要或标签..." aria-label="搜索文章">
-          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="搜索文章标题、摘要、标签或正文…" aria-label="搜索文章">
+          <span class="search-icon"><svg class="ic"><use href="#i-search"/></svg></span>
         </div>
+        <div class="body-search-results" id="bodySearchResults" aria-live="polite"></div>
         <div class="tag-filter reveal" id="tagFilter"></div>
         <div class="post-list" id="postList"></div>
         <div class="page-footer-spacer"></div>
+      </div>
+
+      <!-- 哲学语录 -->
+      <div class="philosophy-quote reveal">
+        <p class="pq-text">「那些杀不死我的，使我更强大。」</p>
+        <p class="pq-src">尼采</p>
       </div>
     </section>
 
@@ -182,6 +289,12 @@
       <div class="container">
         <article class="post-article" id="postArticle"></article>
       </div>
+
+      <!-- 哲学语录 -->
+      <div class="philosophy-quote reveal">
+        <p class="pq-text">「不知道自己的无知，是双倍的无知。」</p>
+        <p class="pq-src">柏拉图</p>
+      </div>
     </section>
 
     <!-- ============================================================ -->
@@ -190,10 +303,16 @@
     <section id="timeline-page" class="page">
       <div class="container">
         <div class="page-hero">
-          <h1 class="page-title reveal">📜 动态</h1>
+          <h1 class="page-title reveal"><svg class="ic"><use href="#i-clock"/></svg>动态</h1>
           <p class="page-desc reveal">记录博客的更新与成长轨迹</p>
         </div>
         <div class="timeline" id="timelineContainer"></div>
+      </div>
+
+      <!-- 哲学语录 -->
+      <div class="philosophy-quote reveal">
+        <p class="pq-text">「我们不是因为事情困难而不敢做，而是因为不敢做，事情才变得困难。」</p>
+        <p class="pq-src">塞内加</p>
       </div>
     </section>
 
@@ -203,11 +322,23 @@
     <section id="guestbook-page" class="page">
       <div class="container">
         <div class="page-hero">
-          <h1 class="page-title reveal">💬 留言板</h1>
-          <p class="page-desc reveal">有任何想法、问题或建议？欢迎在这里留言交流 👋</p>
+          <h1 class="page-title reveal"><svg class="ic"><use href="#i-message"/></svg>留言板</h1>
+          <p class="page-desc reveal">有任何想法、问题或建议？欢迎在这里留言交流</p>
         </div>
-        <div class="guestbook-messages" id="guestbookMessages"></div>
-        <div id="guestbook-giscus" class="giscus-section"></div>
+        <div class="guestbook-layout">
+          <div class="guestbook-col-left">
+            <div id="guestbook-giscus" class="giscus-section"></div>
+          </div>
+          <div class="guestbook-col-right">
+            <div class="guestbook-messages" id="guestbookMessages"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 哲学语录 -->
+      <div class="philosophy-quote reveal">
+        <p class="pq-text">「在隆冬，我终于知道，我身上有一个不可战胜的夏天。」</p>
+        <p class="pq-src">加缪</p>
       </div>
     </section>
 
@@ -216,14 +347,16 @@
     <!-- ============================================================ -->
     <section id="bottle-page" class="page">
       <div class="container">
-        <div class="page-hero">
-          <h1 class="page-title reveal">🍾 漂流瓶</h1>
-          <p class="page-desc reveal">写一段话扔进海里，再捞一个陌生人的上来 · <span id="bottleCount" style="color:var(--accent);font-weight:600;">...</span> 个瓶子漂在海里</p>
-        </div>
+        <div class="bottle-aside">
+          <div class="page-hero">
+            <h1 class="page-title reveal"><svg class="ic"><use href="#i-bottle"/></svg>漂流瓶</h1>
+            <p class="page-desc reveal">写一段话扔进海里，再捞一个陌生人的上来 · <span id="bottleCount" style="color:var(--accent);font-weight:600;">...</span> 个瓶子漂在海里</p>
+          </div>
 
-        <div class="bottle-tabs reveal">
-          <button class="bottle-tab active" data-bottle-tab="throw">✍️ 扔瓶子</button>
-          <button class="bottle-tab" data-bottle-tab="pick">🎣 捞瓶子</button>
+          <div class="bottle-tabs reveal">
+            <button class="bottle-tab active" data-bottle-tab="throw"><svg class="ic"><use href="#i-pen"/></svg>扔瓶子</button>
+            <button class="bottle-tab" data-bottle-tab="pick"><svg class="ic"><use href="#i-anchor"/></svg>捞瓶子</button>
+          </div>
         </div>
 
         <!-- 扔瓶子面板 -->
@@ -243,7 +376,7 @@
               <input type="text" id="bottleUrl" class="bottle-input" placeholder="https://..." maxlength="500" autocomplete="off">
             </div>
             <button class="btn btn-primary btn-lg" id="throwBtn" style="width:100%;justify-content:center;margin-top:.5rem;">
-              🌊 扔进海里
+              <svg class="ic"><use href="#i-send"/></svg>扔进海里
             </button>
             <div class="bottle-feedback" id="throwFeedback"></div>
           </div>
@@ -252,14 +385,23 @@
         <!-- 捞瓶子面板 -->
         <div class="bottle-panel" id="pickPanel">
           <div class="glass-card" id="pickCard" style="padding:2rem;text-align:center;">
-            <div style="font-size:3rem;margin-bottom:1rem;">🍾</div>
-            <p style="color:var(--text2);margin-bottom:1.25rem;">点击按钮随机捞一个漂流瓶</p>
+            <!-- 捞瓶结果只更新 #pickResult，#pickBtn / #pickFeedback 常驻，避免按钮重建导致监听器失效 -->
+            <div id="pickResult">
+              <div class="bottle-pick-emoji"><svg class="ic"><use href="#i-bottle"/></svg></div>
+              <p style="color:var(--text2);margin-bottom:1.25rem;">点击按钮随机捞一个漂流瓶</p>
+            </div>
             <button class="btn btn-primary btn-lg" id="pickBtn" style="justify-content:center;">
-              🎣 捞一个
+              <svg class="ic"><use href="#i-anchor"/></svg>捞一个
             </button>
             <div class="bottle-feedback" id="pickFeedback"></div>
           </div>
         </div>
+      </div>
+
+      <!-- 哲学语录 -->
+      <div class="philosophy-quote reveal">
+        <p class="pq-text">「天空没有留下翅膀的痕迹，但我已飞过。」</p>
+        <p class="pq-src">泰戈尔</p>
       </div>
     </section>
 
@@ -271,57 +413,117 @@
         <div class="about-hero-section reveal">
           <div class="about-avatar-wrap">
             <div class="about-avatar-ring"></div>
-            <div class="about-avatar-main">🌿</div>
+            <img src="Pic/icon.jpg" alt="风春桐海君" class="about-avatar-main">
           </div>
           <h1 class="about-name">风春桐海君</h1>
           <p class="about-tagline">热爱技术的开发者 / 写作者</p>
-          <p class="about-desc">从 Python 数据科学到 Java 企业开发，从 Linux 系统管理到 Vim 编辑器哲学。也沉迷游戏剧情与古典文学，用代码和文字记录这个时代的故事。</p>
+          <p class="about-desc">白天与代码和服务器打交道，夜晚在游戏、文学与星辰之间收集故事。</p>
+        </div>
+
+        <div class="about-story">
+          <section class="about-story-opening reveal">
+            <p class="story-kicker">FROM THIS SIDE OF THE SCREEN</p>
+            <h2>你从网络的另一端而来，<br>刚好停在我的坐标上。</h2>
+            <p class="story-greeting">欢迎光临。<br>名字太长的话，喊我 <strong>风君</strong> 就行。</p>
+          </section>
+
+          <blockquote class="about-credo reveal">
+            <p>我不太擅长用几行履历概括自己。</p>
+            <p>一个仍在维护的项目，一篇认真写完的文章，一段被反复修改过的代码——这些长久留下来的东西，或许更接近真正的我。</p>
+            <p>于是我把它们收进这座小小的档案馆，等待某一天，被你翻到。</p>
+          </blockquote>
+
+          <section class="story-section reveal">
+            <div class="story-no">01</div>
+            <div class="story-body">
+              <p class="story-label">MAKING IDEAS TANGIBLE</p>
+              <h3>把脑海里的火花接到现实</h3>
+              <p>我的日常，经常从一个闪得很快的念头开始：能不能做得更顺一点？能不能让机器替人省下一段重复劳动？</p>
+              <p>于是终端亮起，Python、Linux、服务器和 AI 工具陆续登场。模糊的想法被拆成结构、接口与一次次测试，最后变成一个能够运行、能够交到别人手里的东西。</p>
+              <p>灵感接通时，我可以对着屏幕一路工作到忘记时间；大脑过载时，也会和一个最普通的报错僵持半天，最后发现只是少写了一个字符。</p>
+              <p>我喜欢的不是把技术堆得多复杂，而是让复杂藏在背后，让使用它的人觉得自然、清楚，甚至察觉不到那些费过的力气。</p>
+              <p>当某个陌生人因此少绕了一步路，项目便不再只是硬盘里的一组文件，而真正进入了现实。</p>
+            </div>
+          </section>
+
+          <section class="story-section reveal">
+            <div class="story-no">02</div>
+            <div class="story-body">
+              <p class="story-label">ARCHIVE FOR LATER</p>
+              <h3>✍️ 给未来留一份可检索的底稿</h3>
+              <p>很多问题解决之后，很快就会从记忆里淡去。博客让我把当时的路径保存下来：哪里判断错了，怎样找到出口，又有哪些答案值得下次直接取用。</p>
+              <p>技术笔记之外，这里也收录我对故事的偏爱。游戏中的一段旅程、书页里的一句话、某个夜晚突然出现的想法，都可能成为一篇文章的起点。</p>
+              <p>工具越来越聪明，获得答案越来越快，但选择什么问题、相信什么方向、愿意为何投入时间，依然是属于人的部分。</p>
+              <p>所以我继续写。代码负责构造可以运转的世界，文字负责保存那些无法被编译，却不该被遗忘的东西。</p>
+            </div>
+          </section>
+
+          <section class="story-section reveal">
+            <div class="story-no">03</div>
+            <div class="story-body">
+              <p class="story-label">RECHARGING ELSEWHERE</p>
+              <h3>🎮 关掉终端以后，我去别处补充电量</h3>
+              <p>屏幕熄下去，生活会切换到另一套运行方式。那些看似与开发无关的时刻，常常又悄悄成为下一次创作的素材。</p>
+              <ul class="story-hobbies">
+                <li><span>📖</span><strong>在文字里远行</strong><small>读小说、长文和论坛里的陌生观点，借别人的眼睛看一会儿世界。</small></li>
+                <li><span>📷</span><strong>收集日常切片</strong><small>沿着没有目的地的路线散步，把天气、街灯和偶然遇见的画面存下来。</small></li>
+                <li><span>🎮</span><strong>进入另一种人生</strong><small>在游戏的地图、音乐与人物中停留，观察一个虚构世界如何让人相信。</small></li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="story-section story-contact reveal">
+            <div class="story-no">04</div>
+            <div class="story-body">
+              <p class="story-label">SAY HELLO</p>
+              <h3>📮 如果你也收到了这段信号</h3>
+              <p>也许你是因为一篇文章来到这里，也许只是沿着链接随手点进来。无论如何，谢谢你愿意停留片刻。</p>
+              <p>如果你想讨论一个技术问题、交换最近喜欢的故事，或有一个值得一起尝试的想法，都可以给我发来消息。</p>
+              <p class="story-ending">这座档案馆会继续生长。<br>下一次更新之前，<br>愿我们都在做让自己眼睛发亮的事。</p>
+            </div>
+          </section>
         </div>
 
         <div class="about-grid">
           <div class="about-item glass-card reveal">
-            <div class="about-item-icon">⚡</div>
-            <h3>技术技能</h3>
+            <div class="about-item-icon"><svg class="ic"><use href="#i-zap"/></svg></div>
+            <h3>技能</h3>
             <div class="skill-list">
               <div class="skill-item">
                 <div class="skill-info"><span>Python</span><span>90%</span></div>
                 <div class="skill-track"><div class="skill-fill" style="width:90%"></div></div>
               </div>
               <div class="skill-item">
-                <div class="skill-info"><span>Java</span><span>80%</span></div>
-                <div class="skill-track"><div class="skill-fill" style="width:80%"></div></div>
-              </div>
-              <div class="skill-item">
                 <div class="skill-info"><span>Linux / Shell</span><span>85%</span></div>
                 <div class="skill-track"><div class="skill-fill" style="width:85%"></div></div>
               </div>
               <div class="skill-item">
-                <div class="skill-info"><span>Vim / Neovim</span><span>75%</span></div>
-                <div class="skill-track"><div class="skill-fill" style="width:75%"></div></div>
+                <div class="skill-info"><span>AI / 机器学习</span><span>80%</span></div>
+                <div class="skill-track"><div class="skill-fill" style="width:80%"></div></div>
               </div>
               <div class="skill-item">
-                <div class="skill-info"><span>Git / DevOps</span><span>70%</span></div>
-                <div class="skill-track"><div class="skill-fill" style="width:70%"></div></div>
+                <div class="skill-info"><span>文学创作</span><span>85%</span></div>
+                <div class="skill-track"><div class="skill-fill" style="width:85%"></div></div>
               </div>
             </div>
           </div>
 
           <div class="about-item glass-card reveal">
-            <div class="about-item-icon">💬</div>
+            <div class="about-item-icon"><svg class="ic"><use href="#i-message"/></svg></div>
             <h3>找到我</h3>
             <div class="contact-links">
               <a href="https://github.com/RhysZhang1" target="_blank" rel="noopener" class="contact-link">
-                <span class="cl-icon">🐙</span>
+                <span class="cl-icon"><svg class="ic"><use href="#i-github"/></svg></span>
                 <span class="cl-text">GitHub</span>
                 <span class="cl-arrow">→</span>
               </a>
               <a href="mailto:rhys1233@outlook.cl" class="contact-link">
-                <span class="cl-icon">✉️</span>
+                <span class="cl-icon"><svg class="ic"><use href="#i-mail"/></svg></span>
                 <span class="cl-text">Email</span>
                 <span class="cl-arrow">→</span>
               </a>
               <a href="/feed.php" class="contact-link">
-                <span class="cl-icon">📡</span>
+                <span class="cl-icon"><svg class="ic"><use href="#i-rss"/></svg></span>
                 <span class="cl-text">RSS</span>
                 <span class="cl-arrow">→</span>
               </a>
@@ -329,17 +531,99 @@
           </div>
 
           <div class="about-item glass-card reveal">
-            <div class="about-item-icon">✍️</div>
+            <div class="about-item-icon"><svg class="ic"><use href="#i-pen"/></svg></div>
             <h3>创作方向</h3>
             <div class="create-list">
-              <span class="create-item">🎮 游戏剧情</span>
-              <span class="create-item">📜 古典诗词</span>
-              <span class="create-item">🌏 诗歌翻译</span>
-              <span class="create-item">🖋️ 二次创作</span>
+              <span class="create-item">游戏剧情</span>
+              <span class="create-item">古典诗词</span>
+              <span class="create-item">诗歌翻译</span>
+              <span class="create-item">二次创作</span>
             </div>
           </div>
 
         </div>
+
+        <div class="philosophy-quote reveal">
+          <p class="pq-text">「认识你自己。」</p>
+          <p class="pq-src">苏格拉底</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 阿帽专区（数据由 renderWanderer() 从 data/wanderer.json 填充） -->
+    <!-- ============================================================ -->
+    <section id="wanderer-page" class="page">
+
+      <!-- 主视觉：宽幅横幅 + 渐变遮罩 + 浮动羽毛 -->
+      <div class="wm-hero">
+        <img src="Pic/a2.webp" alt="" class="wm-hero-img" id="wmHeroImg" width="2400" height="1140">
+        <div class="wm-hero-veil" aria-hidden="true"></div>
+        <div class="wm-hero-drift" id="wmHeroDrift" aria-hidden="true"></div>
+        <span class="wm-hero-caption" aria-hidden="true">皆無</span>
+        <div class="wm-hero-inner">
+          <p class="wm-kicker" id="wmKicker">AKADEMIYA · VAHUMANA · HAT GUY</p>
+          <h1 class="wm-title">
+            <span class="wm-title-cn" id="wmTitle">阿帽</span>
+            <span class="wm-title-latin" id="wmLatin">HAT GUY</span>
+          </h1>
+          <p class="wm-subtitle" id="wmSubtitle"></p>
+          <p class="wm-desc" id="wmDesc"></p>
+          <p class="wm-credit" id="wmCredit"></p>
+        </div>
+      </div>
+
+      <div class="container">
+        <!-- 篇章名册 + 阅读区 -->
+        <div class="wm-layout">
+          <nav class="wm-roster" id="wmRoster" aria-label="选择篇章"></nav>
+          <article class="wm-scroll" id="wmScroll" tabindex="0" aria-live="polite">
+            <header class="wm-scroll-head">
+              <span class="wm-scroll-sigil" id="wmSigil" aria-hidden="true"></span>
+              <h2 class="wm-scroll-title" id="wmScrollTitle"></h2>
+            </header>
+            <div class="wm-scroll-text" id="wmScrollText"></div>
+            <footer class="wm-scroll-controls">
+              <button type="button" class="wm-step" id="wmPrev" data-wm-direction="prev">
+                <span aria-hidden="true">←</span> <span class="wm-step-label"></span>
+              </button>
+              <span class="wm-scroll-progress" id="wmProgress"></span>
+              <button type="button" class="wm-step" id="wmNext" data-wm-direction="next">
+                <span class="wm-step-label"></span> <span aria-hidden="true">→</span>
+              </button>
+            </footer>
+          </article>
+        </div>
+
+        <!-- 语录 -->
+        <section class="wm-block">
+          <div class="section-header reveal">
+            <div class="section-label">FRAGMENTS</div>
+            <h2 class="section-title"><span class="accent-bar"></span><span id="wmQuotesTitle">拾遗 · 阿帽语录</span></h2>
+          </div>
+          <div class="wm-quote-grid" id="wmQuoteGrid"></div>
+        </section>
+
+        <!-- 命之座 -->
+        <section class="wm-block">
+          <div class="section-header reveal">
+            <div class="section-label">PEREGRINUS</div>
+            <h2 class="section-title"><span class="accent-bar"></span><span id="wmConstTitle">命之座 · 浪客座</span></h2>
+          </div>
+          <div class="wm-const-grid" id="wmConstGrid"></div>
+        </section>
+
+        <!-- 天赋 -->
+        <section class="wm-block">
+          <div class="section-header reveal">
+            <div class="section-label">TALENTS</div>
+            <h2 class="section-title"><span class="accent-bar"></span><span id="wmSkillsTitle">天赋</span></h2>
+            <p class="section-sub" id="wmOutfit"></p>
+          </div>
+          <div class="wm-skill-list" id="wmSkillList"></div>
+        </section>
+
+        <div class="page-footer-spacer"></div>
       </div>
     </section>
   </main>
@@ -354,10 +638,15 @@
         <a href="#guestbook" data-page="guestbook">留言</a>
         <a href="#bottle" data-page="bottle">漂流瓶</a>
         <a href="#about" data-page="about">关于</a>
+        <a href="#wanderer" data-page="wanderer">阿帽</a>
         <a href="download.php">下载</a>
-        <a href="/feed.php" target="_blank">📡 RSS</a>
+        <a href="reader.php">阅读</a>
+        <a href="/feed.php" target="_blank" rel="noopener"><svg class="ic"><use href="#i-rss"/></svg>RSS</a>
       </div>
-      <p>&copy; 2026 风春桐海君. Built with ❤️ and ☕</p>
+      <p class="footer-logo-mono">&lt;/风春桐海君&gt;</p>
+      <p class="footer-philo">用代码书写诗篇，以文字打捞时间</p>
+      <p class="footer-eq">e<sup>iπ</sup> + 1 = 0 &nbsp;·&nbsp; 我们由星辰所造，终将归于星辰</p>
+      <p>&copy; <span id="copyrightYear">2026</span> 风春桐海君 · 用代码与文字记录时代</p>
     </div>
   </footer>
 
@@ -366,36 +655,57 @@
   <!-- ===== 移动端底部导航栏 ===== -->
   <nav class="bottom-nav" id="bottomNav">
     <a href="#home" class="bottom-nav-item active" data-page="home">
-      <span class="bni-icon">🏠</span>
+      <span class="bni-icon"><svg class="ic"><use href="#i-home"/></svg></span>
       <span class="bni-label">首页</span>
     </a>
     <a href="#blog" class="bottom-nav-item" data-page="blog">
-      <span class="bni-icon">📝</span>
+      <span class="bni-icon"><svg class="ic"><use href="#i-book"/></svg></span>
       <span class="bni-label">文章</span>
     </a>
     <a href="#timeline" class="bottom-nav-item" data-page="timeline">
-      <span class="bni-icon">📡</span>
+      <span class="bni-icon"><svg class="ic"><use href="#i-clock"/></svg></span>
       <span class="bni-label">动态</span>
     </a>
     <a href="#guestbook" class="bottom-nav-item" data-page="guestbook">
-      <span class="bni-icon">💬</span>
+      <span class="bni-icon"><svg class="ic"><use href="#i-message"/></svg></span>
       <span class="bni-label">留言</span>
     </a>
     <a href="#bottle" class="bottom-nav-item" data-page="bottle">
-      <span class="bni-icon">🍾</span>
+      <span class="bni-icon"><svg class="ic"><use href="#i-bottle"/></svg></span>
       <span class="bni-label">瓶子</span>
     </a>
     <a href="#about" class="bottom-nav-item" data-page="about">
-      <span class="bni-icon">👤</span>
+      <span class="bni-icon"><svg class="ic"><use href="#i-user"/></svg></span>
       <span class="bni-label">关于</span>
     </a>
     <a href="download.php" class="bottom-nav-item">
-      <span class="bni-icon">📥</span>
+      <span class="bni-icon"><svg class="ic"><use href="#i-download"/></svg></span>
       <span class="bni-label">下载</span>
     </a>
   </nav>
 
+  <!-- ===== ⌘K 命令面板 ===== -->
+  <div class="cmd-k" id="cmdK" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="cmd-k-backdrop" data-cmdk-close></div>
+    <div class="cmd-k-panel">
+      <div class="cmd-k-input-wrap">
+        <span class="cmd-k-search-ic"><svg class="ic"><use href="#i-search"/></svg></span>
+        <input type="text" id="cmdKInput" class="cmd-k-input" role="combobox" aria-autocomplete="list" aria-controls="cmdKList" aria-expanded="false" placeholder="搜索文章、跳转页面…" autocomplete="off">
+        <span class="cmd-k-esc">Esc</span>
+      </div>
+      <ul class="cmd-k-list" id="cmdKList" role="listbox"></ul>
+      <div class="cmd-k-footer">
+        <span class="cmd-k-hint"><kbd>↑</kbd><kbd>↓</kbd> 选择</span>
+        <span class="cmd-k-hint"><kbd>Enter</kbd> 打开</span>
+        <span class="cmd-k-hint"><kbd>Esc</kbd> 关闭</span>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
-  <script src="js/main.js?v=20260731c"></script>
+  <!-- DOMPurify：文章 Markdown 渲染后消毒；CDN 失败时安全降级为纯文本 -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+  <script src="js/i18n.js?v=20260920b"></script>
+  <script src="js/main.js?v=20260920c"></script>
 </body>
 </html>

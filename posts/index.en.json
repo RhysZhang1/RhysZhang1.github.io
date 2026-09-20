@@ -1,0 +1,106 @@
+[
+  {
+    "id": "titan-hymns",
+    "title": "Hymns of the Titans: An Amphoreus Archive",
+    "tags": ["Honkai: Star Rail", "Amphoreus", "Interactive Story"],
+    "summary": "Thirty-six hymns across two eras and twelve Titans. English translation is reserved for a later update.",
+    "translationStatus": "reserved"
+  },
+  {
+    "id": "python-field-notes",
+    "title": "Python Field Notes: From Syntax to Concurrency",
+    "tags": ["Python", "Programming", "Study Notes"],
+    "summary": "A practical rewrite of the original zong.py notes. English translation is reserved for a later update.",
+    "translationStatus": "reserved"
+  },
+  {
+    "id": "genshin-chronicle",
+    "title": "Genshin Impact Chronicle: From Mondstadt to Snezhnaya",
+    "tags": ["Genshin Impact", "Games"],
+    "summary": "A complete chronicle of Genshin Impact, from Version 1.0 through Song of the Welkin Moon and onward to Snezhnaya."
+  },
+  {
+    "id": "forest-will-remember",
+    "title": "The Forest Will Remember Everything",
+    "tags": ["Genshin Impact", "Prose"],
+    "summary": "May you grow up well, yielding neither to wind nor rain—the forest will remember everything."
+  },
+  {
+    "id": "wanderer-story",
+    "title": "Wanderer: From Puppet to a Life of His Own",
+    "tags": ["Genshin Impact", "Character", "Story"],
+    "summary": "The complete story of Scaramouche and the Wanderer: from the puppet in Shakkei Pavilion to the kabukimono of Tatarasuna, from Fatui Harbinger to a soul who finally found his own place in the world."
+  },
+  {
+    "id": "aeon-saga",
+    "title": "A Galactic Lament of Aeons: Elation, Destruction, and Trailblaze",
+    "tags": ["Honkai: Star Rail", "Fan Work", "Story"],
+    "summary": "Aha, the Aeon of Elation, watches Akivili in secret; Nanook, the Aeon of Destruction, watches Aha. The cycle endures for three million years—until someone breaks it."
+  },
+  {
+    "id": "chadwick-genius",
+    "title": "Genius Society #79: Calderon Chadwick",
+    "tags": ["Honkai: Star Rail", "Character"],
+    "summary": "The creator of the Imaginary Implosion Pulse, and a genius who spent two Amber Eras seeking atonement."
+  },
+  {
+    "id": "classical-poems",
+    "title": "Two Classical Chinese Poems",
+    "tags": ["Poetry", "Literature"],
+    "summary": "Liu Guo's \"Tangduoling\" and Jiang Jie's \"Plum Blossom Prelude: Snowbound at Jingxi.\""
+  },
+  {
+    "id": "amphoreus-epic",
+    "title": "Amphoreus: The Golden Epic",
+    "tags": ["Honkai: Star Rail", "Story"],
+    "summary": "A wager, deicide, and a lie vast enough to cover the heavens—the heroic epic of Amphoreus's Chrysos Heirs."
+  },
+  {
+    "id": "amphoreus-thoughts",
+    "title": "Reflections on the Amphoreus Story",
+    "tags": ["Honkai: Star Rail", "Plot"],
+    "summary": "Live reactions from my journey through Amphoreus: Cipher, Aglaea, Hyacine… every chapter hit me right in the heart."
+  },
+  {
+    "id": "poems-afar",
+    "title": "Poems from Afar",
+    "tags": ["Poetry", "Translation"],
+    "summary": "Bilingual editions of \"If Your Long Journey\" and Dylan Thomas's \"Do Not Go Gentle into That Good Night.\""
+  },
+  {
+    "id": "venus-cake",
+    "title": "Big Sister Venus's Chocolate Cake",
+    "tags": ["Story", "Slice of Life"],
+    "summary": "The most important ingredient in cooking is not flavor, but the feeling you hope to share with someone."
+  },
+  {
+    "id": "youth-ode",
+    "title": "Ode to Youth",
+    "tags": ["Poetry", "Youth"],
+    "summary": "May you chase your dream for thirty thousand miles; may your sword stand against a million. A young heart should be fierce as a tiger and wolf."
+  },
+  {
+    "id": "divine-hymns",
+    "title": "Hymns to Divinity",
+    "tags": ["Honkai: Star Rail", "Poetry"],
+    "summary": "A hymn to Senadina and the seven-day declaration of creation in \"The First Cause.\""
+  },
+  {
+    "id": "star-rail-ballad",
+    "title": "Songs of the Star Rail",
+    "tags": ["Honkai: Star Rail", "Lyrics"],
+    "summary": "An ode to the stars and a song for the Astral Express, paying tribute to every character along the journey."
+  },
+  {
+    "id": "fragments",
+    "title": "Scattered Fragments",
+    "tags": ["Honkai: Star Rail", "Genshin Impact"],
+    "summary": "Fragments gathered from distant places—Lauma, a Fatui tea party, Caesar's promise, and an ode to Natlan's flame."
+  },
+  {
+    "id": "geyue-tale",
+    "title": "I Won't Give In—She's Feiyao",
+    "tags": ["Fan Work", "Xianzhou"],
+    "summary": "An afternoon at a Xianzhou general's residence: Yao Guang and Evanescia meet in an unexpectedly intimate clash."
+  }
+]

@@ -1,0 +1,199 @@
+{
+  "id": "wanderer",
+  "kicker": "AKADEMIYA · VAHUMANA · HAT GUY",
+  "title": "Hat Guy",
+  "latin": "阿帽",
+  "subtitle": "The wind kept every name he ever had — and then let them all go.",
+  "description": "A student of the Vahumana Darshan, enrolled under the name \"Hat Guy.\" The road that led here was very long.",
+  "hero": {
+    "image": "Pic/a2.webp",
+    "caption": "皆無",
+    "credit": "Rezpencil",
+    "alt": "Hat Guy standing by a mountain lake, white birds riding the wind"
+  },
+  "chapters": [
+    {
+      "key": "origin",
+      "label": "Origins",
+      "icon": "feather",
+      "text": "Many years ago, the Wanderer was not yet called the Wanderer. He bore several names, each marking a different identity. Today, all those histories have been forgotten.\n\nThe puppet. The kabukimono. The Sixth of the Fatui Harbingers, \"The Balladeer\"...\n\nEvery name was a thread of fate wound around the puppet's joints.\n\nLooking back, it began centuries ago. The puppet who wept at the moment of his birth was never granted a name. All he possessed was a small golden feather, given as a token.\n\nHe was placed inside Shakkei Pavilion, where he spent his days staring blankly at hollow beauty: fiery maple leaves, exquisite carved latticework... Within that magnificent prison, sensation slowly deserted him."
+    },
+    {
+      "key": "tatarasuna",
+      "label": "The Days at Tatarasuna",
+      "icon": "maple",
+      "text": "A kind samurai named Katsuragi accidentally entered the pavilion while working and rescued him. Katsuragi brought him to live in Tatarasuna and introduced him to its people.\n\nHe was still innocent as a newborn then, full of goodwill and gratitude. Katsuragi saw the golden feather—something no ordinary person would wear—and understood that silence about his origins must conceal some pain. He therefore hid the truth about Shakkei Pavilion, claiming he had found the child while patrolling Nazuchi Beach, and asked him to tell the same story.\n\nBusy, noisy Tatarasuna held the happiest memories of his life. There, for one brief time, he became human—became ordinary.\n\nKatsuragi, Mikoshi Nagamasa, Niwa, Miyazaki, and many other residents whose names have long been lost taught him to read and write, to light a fire and cook, and to work the forge. They welcomed him as a friend.\n\nThey even asked him, \"Wouldn't you like a name? Everyone outside has taken to calling you the kabukimono.\"\n\nHe did not dislike it. *Kabukimono* described someone flamboyantly dressed and unconventional in conduct. However unusual it made him sound, the name still meant that he was a person—one of Tatarasuna's own.\n\nSadly, no matter how dearly he loved the name, he was eventually forced to abandon it. Once he no longer wished to be human, it held no meaning."
+    },
+    {
+      "key": "disaster",
+      "label": "Disaster",
+      "icon": "flame",
+      "text": "Tatarasuna's calamity began with the Akame Clan and a Fontaine mechanic named Escher. To advance their forging craft, Akame entered a close partnership with Escher and his new Fontaine technology, then introduced him to Niwa, another heir to the three branches of Isshin Art.\n\nEscher's arrival briefly filled Tatarasuna with excitement. His new techniques made the processing of Crystal Marrow faster and more productive. As time passed, however, something went wrong with the great furnace at the settlement's center. Black fumes accumulated within it, and the strange gas gradually began to poison the smiths.\n\nThe dead multiplied. The furnace slipped further out of control. No one could approach its core; even shutting it down became an all but impossible task.\n\nAs Tatarasuna's chief overseer, Niwa had to suppress the news for a time while sending boats to Inazuma City to seek help from the Tenshukaku. For reasons no one understood, not one of those who sailed away returned.\n\nThe kabukimono knew Niwa needed the Raiden Shogun's aid. What he did not know was that, that very year, the Electro Archon had fashioned a perfect puppet from her own being and entrusted her duties to the \"guardian of eternity.\" In a tiny boat and through a storm of thunder and rain, heedless of his safety, he reached the Tenshukaku and begged for an audience with the Shogun.\n\nYae Miko promised to bring help at once. But the kabukimono had exhausted every scrap of patience. Deaf to her promise, he returned believing the Shogunate had abandoned Tatarasuna.\n\nWhen aid finally arrived, the only account came from Escher: Niwa, ashamed of his failure, had fled with his family; in his place, the kabukimono entered the core and shut down the furnace."
+    },
+    {
+      "key": "friend",
+      "label": "A Friend",
+      "icon": "heart",
+      "text": "After leaving Tatarasuna, the kabukimono met a child in a small house by Inazuma's shore. The boy was frail and sickly, living alone in an old hut open to the wind.\n\nFor days, his parents did not return. Only later did the kabukimono learn that they, too, had worked at Tatarasuna. Their absence meant they had likely died somewhere, quietly and unseen.\n\nThe two told each other where they came from and promised to live together in that dilapidated hut. As proof of their friendship, the kabukimono took him to Shakkei Pavilion and showed him the room where he had once lived.\n\nHe thought he would never return there again. He never imagined that a single night was enough for the child to die. A single night—only long enough for the kabukimono to search for food and fetch a few pieces of furniture others had thrown away.\n\nEven after all he had endured, he did not believe that a human life could end in an instant. An \"instant,\" to him, could leave only pain.\n\nPast the shock came bottomless fury. He was alone again. Did that not mean he had been abandoned?\n\nAgain, and again, and again!\n\nThat night, flames towered beside the sea. The kabukimono burned the hut, took the old straw hat he found inside, and set out upon a long journey."
+    },
+    {
+      "key": "fatui",
+      "label": "The Fatui",
+      "icon": "strings",
+      "text": "After leaving Inazuma, he discarded the title of kabukimono and became nameless once more. Until \"The Jester\" found him, he never considered taking another name.\n\nPierro persuaded him, drawing him toward that mad banquet. He traveled all the way to Snezhnaya and entered the service of the Fatui.\n\nIn Snezhnaya, \"The Doctor\" welcomed his arrival and invited him to serve as a crucial experimental subject. Puppet-making technology had first come from Khaenri'ah, and a creation of the Electro Archon was more exceptional still. Using him as a model, Dottore researched and experimented for decades before establishing the technology later used to create his \"segments.\"\n\nIn return, Dottore released the seals hidden within his body, greatly increasing his power.\n\nHe led a force into the Abyss and spent a long age exploring it. When he eventually returned to Snezhnaya with the fruits of that expedition, he was made the Sixth Harbinger. His mission changed from Abyssal exploration to rapid deployment in support of covert Fatui operations across the nations.\n\nOnly then did he believe himself worthy of a new name: \"The Balladeer.\""
+    },
+    {
+      "key": "truth",
+      "label": "The Truth",
+      "icon": "eye",
+      "text": "At the heart of Irminsul, the Balladeer encountered the \"truth\" Lesser Lord Kusanali had placed within the stream of information.\n\nNiwa—the friend who had taught him to live as a human and treated him as an ordinary person—had not fled Tatarasuna in disgrace as Escher claimed. The murderer was Escher himself: Dottore. And the heart sealed inside the device placed in the Balladeer's chest had been torn from Niwa while his body was still warm.\n\nNiwa's death was disguised as part of the Tatarasuna disaster. As the next person in command, Mikoshi Nagamasa should have paid for it with his life. His loyal samurai Katsuragi saved him by taking every charge upon himself.\n\nThat night, Nagamasa drew his beloved blade, the Daitatara Nagamasa, and cut Katsuragi down with a single stroke.\n\nHad they not believed in the gods? If they had, why were they made to suffer such ruin?\n\nAnyone elsewhere in the world would have been powerless. But the Balladeer was different. At that moment, he knew there was one thing in the world that only he could attempt.\n\nHe considered himself brave because he did not fear death. To a puppet, death was only a minor threat; only humans with hearts understood true fear.\n\nHe also considered himself a coward, and his regret knew no end. If he had possessed his present strength then—if he had learned to trust others a little less—would those he called friends have met such terrible ends?"
+    },
+    {
+      "key": "life",
+      "label": "A Life of His Own",
+      "icon": "doll",
+      "text": "A tiny doll—\n\nAfter deciding to remain in Sumeru, the Wanderer visited Treasures Street and asked the merchants how to make a doll. A kindly white-haired elder beckoned him to sit nearby and patiently taught him, stitch by stitch, to shape cloth and thread into what he wanted.\n\nSeveral days later, he finished it: a little figure with white clothes and black hair, a belt tied in a tiny bow at its waist, and one comical round tear hanging from the corner of its eye.\n\nLong ago, a young friend had made such a doll in the Wanderer's former likeness. Before leaving Inazuma, he had burned it with the old hut by his own hand.\n\nYears later, he sewed one himself. It felt strangely dear in his palm.\n\nSmall and soft, it was like a defenseless child.\n\n\"From now on, you will wander with me.\"\n\nHe whispered the words and carefully tucked it into his pocket."
+    },
+    {
+      "key": "vision",
+      "label": "The Vision",
+      "icon": "wind",
+      "text": "In an instant, the Wanderer heard the voice of the wind. It came from nowhere, yet somehow changed direction to welcome him.\n\nUpon it rode an ancient, familiar scent: hammers, metal, furnaces, dust...\n\nDistant dreams. Lost happiness. How incredible that someone like him had once lived a life so simple.\n\nIn an instant, the Wanderer glimpsed his reflections. Each was vivid; every one was truly him.\n\nCraven and timid. Wretched and in pain. Arrogant and absurd... At last, they joined into one.\n\nTo acknowledge the past was to admit defeat—to admit that he was a coward who had achieved nothing and possessed nothing.\n\nYet only by doing so could he break his shackles and truly become that pitiful self again.\n\nIn that moment, he understood: the serene and beautiful surface had always been an illusion. His true self had never died. It had lived deep inside him all along. So long as the choice remained his, he would take the same road no matter how many times he walked it.\n\nThe instant he moved like lightning, brilliant light blocked the attack of Shouki no Kami, the Prodigal. His will and his choice had summoned the gaze of a god.\n\nA Vision descended. As its radiance brightened and dimmed, the glowing ornament resembled a smiling eye asking him across the distance: with a desire this fierce, can you still claim to have no heart?"
+    }
+  ],
+  "quotes": [
+    {
+      "label": "First Meeting",
+      "text": "You want me to state my name? I have gone by many throughout my travels. Any one of them would be lofty beyond reach to a mortal, but to me they are all in the past. Call me whatever you like. Let me see your taste—and try not to disappoint me."
+    },
+    {
+      "label": "Chat: The Wind",
+      "text": "There is no such thing as absolute freedom in this world. Even the wind must one day reach its end."
+    },
+    {
+      "label": "Chat: The Way I Speak",
+      "text": "You think my words are harsh? I merely tell the truth. Anyone unable to accept it should reflect on why."
+    },
+    {
+      "label": "About the Wanderer: Puppets",
+      "text": "Burn a puppet and ashes remain. As for what might be born from those ashes..."
+    },
+    {
+      "label": "About the Wanderer: The Heart",
+      "text": "That thing no longer matters. Clinging to something destined never to belong to you is only a waste of time. I have more important work now."
+    },
+    {
+      "label": "About Visions",
+      "text": "This so-called \"gaze of the gods\" irritates me. But it is usable power, and I am not particular. You think the Anemo element carries some deeper meaning? Hah. Why would you think that? The gods act arrogantly and without reason—haven't I shown you as much?"
+    },
+    {
+      "label": "About Lesser Lord Kusanali",
+      "text": "She chose not to eliminate me, perhaps not merely because I am useful. Perhaps she is wise and possesses a heart of perfect goodness. Or perhaps she saw in me a reflection of loneliness... You say I am interpreting her maliciously? Hah, isn't that only natural? I am hardly a good person."
+    },
+    {
+      "label": "About the Raiden Shogun",
+      "text": "Turning a blind eye to her own creation, then dressing it up as an unwillingness to interfere..."
+    },
+    {
+      "label": "Getting to Know the Wanderer",
+      "text": "How unusual—you actually want to understand me. You will invite trouble, you know.\n\nI once believed becoming a god would let me discard useless emotion. I no longer think so. Anger, at least—whether another's or my own—is a convenient tool.\n\nWhen I entered Irminsul, I held only one thought: I wished I had never come into this world. Irminsul answered that wish, but not with the result I hoped for.\n\nOur paths have crossed, but one day they will lead us to different places. Who knows what may happen then? We shall see."
+    },
+    {
+      "label": "Favorite Food",
+      "text": "Do you have tea? The more bitter, the better. The aftertaste is endless."
+    },
+    {
+      "label": "Least Favorite Food",
+      "text": "Clinging, sugary things—they will stick your teeth together. Keep them for yourself."
+    },
+    {
+      "label": "Birthday",
+      "text": "Give me your hand. ...Hah, relax. I am only taking you somewhere high for a look. Well? Quite a view, isn't it? Spare me your thanks. Trading gratitude back and forth is tedious."
+    },
+    {
+      "label": "Ascension",
+      "text": "...I can tell you did your best.\n\nThe wind is rising... What have you done? You give me power without fearing the consequences? ...Very well.\n\nI can lend you my strength, but treating me as a companion remains dangerous. I hope you understand what you face. If you are unafraid, then stand behind me."
+    }
+  ],
+  "constellation": {
+    "name": "Peregrinus",
+    "latin": "Peregrinus",
+    "items": [
+      {
+        "no": "初番",
+        "name": "Shoban: Ostentatious Plumage",
+        "gloss": "茂风流羽行"
+      },
+      {
+        "no": "二番",
+        "name": "Niban: Isle Amidst White Waves",
+        "gloss": "箙岛廓白浪"
+      },
+      {
+        "no": "三番",
+        "name": "Sanban: Moonflower Kusemai",
+        "gloss": "久世舞夕颜"
+      },
+      {
+        "no": "四番",
+        "name": "Yonban: Set Adrift into Spring",
+        "gloss": "花月歌浮舟"
+      },
+      {
+        "no": "末番",
+        "name": "Matsuban: Ancient Illuminator From Abroad",
+        "gloss": "今昔渡来殿"
+      },
+      {
+        "no": "祝言",
+        "name": "Shugen: The Curtains' Melancholic Sway",
+        "gloss": "霞幕倾松风"
+      }
+    ]
+  },
+  "skills": [
+    {
+      "kind": "Normal Attack",
+      "name": "Yuuban Meigen",
+      "gloss": "行幡鸣弦"
+    },
+    {
+      "kind": "Elemental Skill",
+      "name": "Hanega: Song of the Wind",
+      "gloss": "羽画·风姿华歌"
+    },
+    {
+      "kind": "Elemental Burst",
+      "name": "Kyougen: Five Ceremonial Plays",
+      "gloss": "狂言·式乐五番"
+    }
+  ],
+  "states": [
+    {
+      "name": "Windfavored",
+      "gloss": "优风倾姿"
+    },
+    {
+      "name": "Kuugo: Fushoudan",
+      "gloss": "空居·不生断"
+    },
+    {
+      "name": "Kuugo: Toufukai",
+      "gloss": "空居·刀风界"
+    }
+  ],
+  "outfit": {
+    "name": "A Wrathful Void",
+    "gloss": "寂忿空相"
+  },
+  "sectionTitles": {
+    "roster": "Chapters",
+    "quotes": "Fragments · Words of Hat Guy",
+    "constellation": "Constellation · Peregrinus",
+    "skills": "Talents"
+  },
+  "ui": {
+    "prev": "Previous",
+    "next": "Next"
+  }
+}

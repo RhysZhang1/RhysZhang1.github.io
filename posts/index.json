@@ -1,17 +1,45 @@
 [
   {
+    "id": "titan-hymns",
+    "wordCount": 24957,
+    "filename": "titan-hymns.md",
+    "title": "泰坦颂诗：翁法罗斯诸神档案",
+    "date": "2026-09-08",
+    "tags": [
+      "星穹铁道",
+      "翁法罗斯",
+      "互动叙事"
+    ],
+    "summary": "前纪与末叶、十二位泰坦、三十六则颂诗。沿神名与篇章自由穿行的交互式翁法罗斯档案。"
+  },
+  {
+    "id": "python-field-notes",
+    "wordCount": 2304,
+    "filename": "python-field-notes.md",
+    "title": "Python 学习手册：从语法到并发",
+    "date": "2026-09-08",
+    "tags": [
+      "Python",
+      "编程",
+      "学习笔记"
+    ],
+    "summary": "将旧版 zong.py 重写为一份能查、能跑、能避坑的 Python 学习手册，并修正过时 API 与常见概念错误。"
+  },
+  {
     "id": "genshin-chronicle",
+    "wordCount": 1405,
     "filename": "genshin-chronicle.md",
-    "title": "原神编年史：从蒙德到坎瑞亚",
+    "title": "原神编年史：从蒙德到至冬",
     "date": "2026-07-24",
     "tags": [
       "原神",
       "游戏"
     ],
-    "summary": "原神全版本编年史，从1.0到坎瑞亚篇空月之歌的完整回顾。"
+    "summary": "原神全版本编年史，从1.0到至冬篇的完整回顾。"
   },
   {
     "id": "forest-will-remember",
+    "wordCount": 223,
     "filename": "forest-will-remember.md",
     "title": "森林会记住一切",
     "date": "2026-07-24",
@@ -23,6 +51,7 @@
   },
   {
     "id": "wanderer-story",
+    "wordCount": 3697,
     "filename": "wanderer-story.md",
     "title": "流浪者：从人偶到凭生",
     "date": "2026-07-24",
@@ -35,6 +64,7 @@
   },
   {
     "id": "aeon-saga",
+    "wordCount": 3378,
     "filename": "aeon-saga.md",
     "title": "银河星神悲歌：欢愉、毁灭与开拓",
     "date": "2026-07-24",
@@ -47,6 +77,7 @@
   },
   {
     "id": "chadwick-genius",
+    "wordCount": 6164,
     "filename": "chadwick-genius.md",
     "title": "天才俱乐部79号：卡尔德隆·查德威克",
     "date": "2026-07-24",
@@ -58,6 +89,7 @@
   },
   {
     "id": "classical-poems",
+    "wordCount": 206,
     "filename": "classical-poems.md",
     "title": "古典诗词两首",
     "date": "2026-07-24",
@@ -69,6 +101,7 @@
   },
   {
     "id": "amphoreus-epic",
+    "wordCount": 1741,
     "filename": "amphoreus-epic.md",
     "title": "翁法罗斯：黄金史诗",
     "date": "2026-07-24",
@@ -80,6 +113,7 @@
   },
   {
     "id": "amphoreus-thoughts",
+    "wordCount": 4038,
     "filename": "amphoreus-thoughts.md",
     "title": "翁法罗斯部分剧情感想",
     "date": "2026-07-24",
@@ -91,6 +125,7 @@
   },
   {
     "id": "poems-afar",
+    "wordCount": 1792,
     "filename": "poems-afar.md",
     "title": "远方之诗",
     "date": "2026-07-24",
@@ -102,6 +137,7 @@
   },
   {
     "id": "venus-cake",
+    "wordCount": 983,
     "filename": "venus-cake.md",
     "title": "启明星姐姐的巧克力蛋糕",
     "date": "2026-07-24",
@@ -113,6 +149,7 @@
   },
   {
     "id": "youth-ode",
+    "wordCount": 958,
     "filename": "youth-ode.md",
     "title": "少年行",
     "date": "2026-07-24",
@@ -124,6 +161,7 @@
   },
   {
     "id": "divine-hymns",
+    "wordCount": 902,
     "filename": "divine-hymns.md",
     "title": "神明颂章",
     "date": "2026-07-24",
@@ -135,6 +173,7 @@
   },
   {
     "id": "star-rail-ballad",
+    "wordCount": 1120,
     "filename": "star-rail-ballad.md",
     "title": "星穹之歌",
     "date": "2026-07-24",
@@ -146,6 +185,7 @@
   },
   {
     "id": "fragments",
+    "wordCount": 1739,
     "filename": "fragments.md",
     "title": "零星片段",
     "date": "2026-07-24",
@@ -157,6 +197,7 @@
   },
   {
     "id": "geyue-tale",
+    "wordCount": 4701,
     "filename": "geyue-tale.md",
     "title": "我不给，她绯爻",
     "date": "2026-07-24",

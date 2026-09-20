@@ -32,8 +32,10 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     <ttl>60</ttl>
 
 <?php foreach ($posts as $post):
-      $url     = SITE_URL . '/#post/' . htmlspecialchars($post['id'], ENT_XML1, 'UTF-8');
-      $desc    = htmlspecialchars($post['summary'] ?? '', ENT_XML1, 'UTF-8');
+      // 真实可抓取 URL（/post/xxx 由 .htaccess 重写到 post.php 落地页）
+      $url     = SITE_URL . '/post/' . htmlspecialchars($post['id'], ENT_XML1, 'UTF-8');
+      // CDATA 内不做实体转义（否则读者端会显示 &amp; 等字面量），仅转义 CDATA 结束符 ]]>
+      $desc    = str_replace(']]>', ']]]]><![CDATA[>', (string) ($post['summary'] ?? ''));
       $pubDate = date(DATE_RSS, strtotime($post['date']));
       $tags    = $post['tags'] ?? [];
 ?>

@@ -1,0 +1,89 @@
+# ============================================================
+#  风春桐海君 · 博客 — Apache 配置
+#  安全头 + 目录保护 + URL 重写
+# ============================================================
+
+# --- 安全头（所有响应） ---
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    # HSTS：仅 HTTPS 时激活（Apache 2.4+）
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" "expr=%{HTTPS} == 'on'"
+    # CSP
+    # 字体：googleapis/gstatic 大陆不可达，页面改用 fonts.loli.net 镜像，CSP 两者都保留以便回退
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.loli.net; font-src 'self' blob: https://fonts.gstatic.com https://gstatic.loli.net; img-src 'self' data: blob: https:; frame-src 'self' blob: https://giscus.app; connect-src 'self' https://giscus.app; media-src 'self' blob:; worker-src 'self' blob: https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; form-action 'self'"
+</IfModule>
+
+# --- robots.txt 动态化：由 robots.php 生成（域名随配置自动探测） ---
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^robots\.txt$ robots.php [L]
+    # 文章真实 URL → 落地页（输出 SEO/og 元数据后跳转前端 hash 路由）
+    RewriteRule ^post/([a-zA-Z0-9-]+)/?$ post.php?id=$1 [L,QSA]
+</IfModule>
+
+# --- 文件保护：禁止直接访问仅在服务端使用的数据文件 ---
+# bottles.json 含全部漂瓶内容与 ip_hash，前端仅经 php/bottle.php API 读取，故同样禁直连
+<IfModule mod_alias.c>
+    RedirectMatch 403 ^/data/(ratelimit|counter|bottle_ratelimit|bottle_pick_ratelimit|bottles)\.json$
+</IfModule>
+
+# --- 禁止访问隐藏文件 ---
+<IfModule mod_alias.c>
+    RedirectMatch 403 /\.git
+    RedirectMatch 403 /\.env
+</IfModule>
+
+# --- 默认首页 ---
+DirectoryIndex index.html index.php
+
+# --- 禁止目录浏览 ---
+Options -Indexes
+
+# --- 静态资源缓存（保守时长，避免改版后用户缓存旧资源） ---
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css                "access plus 1 day"
+    ExpiresByType application/javascript  "access plus 1 day"
+    ExpiresByType image/webp              "access plus 7 days"
+    ExpiresByType image/jpeg              "access plus 7 days"
+    ExpiresByType image/png               "access plus 7 days"
+    ExpiresByType image/svg+xml           "access plus 7 days"
+    ExpiresByType font/woff2              "access plus 30 days"
+    ExpiresByType application/xml         "access plus 1 hour"
+</IfModule>
+
+# --- 自定义错误页 ---
+ErrorDocument 403 /403.html
+ErrorDocument 404 /404.html
+ErrorDocument 500 /500.html
+
+# ============================================================
+#  Nginx 用户请将以下配置加入 server 块：
+#
+#  # 安全头
+#  add_header X-Content-Type-Options "nosniff" always;
+#  add_header X-Frame-Options "SAMEORIGIN" always;
+#  add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+#  add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()" always;
+#  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+#  add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.loli.net; font-src 'self' blob: https://fonts.gstatic.com https://gstatic.loli.net; img-src 'self' data: blob: https:; frame-src 'self' blob: https://giscus.app; connect-src 'self' https://giscus.app; media-src 'self' blob:; worker-src 'self' blob: https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; form-action 'self'" always;
+#
+#  # 目录保护（仅阻止服务端私有数据文件）
+#  location ~ ^/data/(ratelimit|counter|bottle_ratelimit|bottle_pick_ratelimit|bottles)\.json$ {
+#      deny all;
+#  }
+#  # PHP 内部文件保护（config.php 和 includes/ 自带直接访问防护；counter.php / bottle.php / post.php 为公开入口需放行）
+#  location ~ ^/php/(?!counter\.php|bottle\.php).*\.php$ {
+#      deny all;
+#  }
+#  # 文章真实 URL → 落地页
+#  location ~ ^/post/([a-zA-Z0-9-]+)/?$ {
+#      rewrite ^/post/([a-zA-Z0-9-]+)/?$ /post.php?id=$1 last;
+#  }
+#
+#  # 默认首页
+#  index index.html index.php;
+# ============================================================

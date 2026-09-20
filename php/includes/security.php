@@ -39,15 +39,18 @@ function sendSecurityHeaders(): void
     }
 
     // 内容安全策略
+    // 字体：googleapis/gstatic 大陆不可达，页面用 fonts.loli.net 镜像，CSP 两者都保留以便回退
     $csp = implode('; ', [
         "default-src 'self'",
         "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://giscus.app",
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "font-src 'self' https://fonts.gstatic.com",
-        "img-src 'self' data: https:",
-        "frame-src https://giscus.app",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.loli.net",
+        "font-src 'self' blob: https://fonts.gstatic.com https://gstatic.loli.net",
+        // blob: 供 epub.js 渲染 iframe 与阅读器资源；frame-src 含 'self'（阅读页 PDF）
+        "img-src 'self' data: blob: https:",
+        "frame-src 'self' blob: https://giscus.app",
         "connect-src 'self' https://giscus.app",
-        "media-src 'self'",
+        "media-src 'self' blob:",
+        "worker-src 'self' blob: https://cdn.jsdelivr.net",
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",

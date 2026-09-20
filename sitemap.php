@@ -26,6 +26,7 @@ $pages = [
     ['loc' => SITE_URL . '/#bottle',         'priority' => '0.6', 'freq' => 'daily'],
     ['loc' => SITE_URL . '/#about',          'priority' => '0.5', 'freq' => 'monthly'],
     ['loc' => SITE_URL . '/download.php',    'priority' => '0.4', 'freq' => 'monthly'],
+    ['loc' => SITE_URL . '/reader.php',      'priority' => '0.4', 'freq' => 'weekly'],
 ];
 
 foreach ($pages as $p) {
@@ -37,7 +38,8 @@ foreach ($pages as $p) {
 }
 
 foreach ($posts as $post) {
-    $url = SITE_URL . '/#post/' . htmlspecialchars($post['id'], ENT_XML1, 'UTF-8');
+    // 真实可抓取 URL（/post/xxx 由 .htaccess 重写到 post.php 落地页，hash 路由搜索引擎不收录）
+    $url = SITE_URL . '/post/' . htmlspecialchars($post['id'], ENT_XML1, 'UTF-8');
     echo '  <url>' . "\n";
     echo '    <loc>' . $url . '</loc>' . "\n";
     echo '    <lastmod>' . htmlspecialchars($post['date'], ENT_XML1, 'UTF-8') . '</lastmod>' . "\n";
