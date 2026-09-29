@@ -4,6 +4,9 @@
 # 本地素材（站点不读取，仅本地查阅）
 /txt/
 
+# 本地私密值（盐值等，PHP 首次运行自动生成）
+/php/secret.local.php
+
 # 运行时数据（PHP 动态生成，不纳入版本控制）
 data/counter.json
 data/ratelimit.json

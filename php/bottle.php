@@ -9,10 +9,12 @@
  *   - IP 频率限制（投瓶每 IP 每分钟 1 次；捞瓶每 IP 每分钟 10 次）
  *   - 数据文件大小上限
  *   - 数据文件读-改-写全程 flock 独占锁（并发投瓶/捞瓶不丢数据）
+ *   - IP 哈希盐值存于 php/secret.local.php（不入版本库），见 includes/secret.php
  */
 
 require_once __DIR__ . '/includes/security.php';
 require_once __DIR__ . '/includes/json_store.php';
+require_once __DIR__ . '/includes/secret.php';
 sendSecurityHeaders();
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -52,7 +54,7 @@ if ($action === 'pick') {
     // ---- 频率限制：每 IP 每分钟最多 10 次捞瓶（防脚本批量扫库）----
     // 独立限流文件，与投瓶的 1 次/分钟互不干扰；检查+记录在锁内完成，避免并发绕过
     $ip     = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-    $ipHash = hash('sha256', $ip . 'bottle-pick-rl-2026');
+    $ipHash = hash('sha256', $ip . secretGet('bottle_pick_rl_salt'));
     $now    = time();
     $pickRateLimitFile = __DIR__ . '/../data/bottle_pick_ratelimit.json';
     $allowed = false;
@@ -139,7 +141,7 @@ if ($url !== '') {
 // ---- 频率限制：每 IP 每分钟最多 1 次投瓶 ----
 // 只存加盐哈希，数据文件不落原始 IP；检查+记录在锁内完成，避免并发绕过
 $ip     = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-$ipHash = hash('sha256', $ip . 'bottle-rl-2026');
+$ipHash = hash('sha256', $ip . secretGet('bottle_rl_salt'));
 $now    = time();
 $wait   = 0;
 $rateUpdated = jsonStoreUpdate($rateLimitFile, function ($rateLimit) use ($ipHash, $now, &$wait) {
@@ -175,7 +177,7 @@ $bottle = [
     'message' => $message,
     'url'     => $url,
     'date'    => date('Y-m-d'),
-    'ip_hash' => hash('sha256', $ip . 'bottle-salt-2026'),
+    'ip_hash' => hash('sha256', $ip . secretGet('bottle_ip_salt')),
 ];
 
 $saved = jsonStoreUpdate($dataFile, function ($bottles) use ($bottle) {
