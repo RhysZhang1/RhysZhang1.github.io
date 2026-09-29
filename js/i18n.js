@@ -59,8 +59,10 @@
     '字': 'Words', '标签': 'Tags', '项': 'Items', '风': 'Wind',
     '首页': 'Home', '文章': 'Posts', '漂流瓶': 'Drift Bottle', '关于': 'About', '书房': 'Library', '资源': 'Resources', '搜索': 'Search',
     // 阿帽专区（界面文案用 Hat Guy；章节正文里的历史称呼在 data/wanderer.json，不走这里）
+    // 下面几条是 data/wanderer*.json 缺字段时的兜底，正常由 JSON 的 sectionTitles 覆盖
     '阿帽': 'Hat Guy', '选择篇章': 'Choose a chapter', '拾遗 · 阿帽语录': 'Fragments · Words of Hat Guy',
-    '命之座 · 浪客座': 'Constellation · Peregrinus', '天赋': 'Talents',
+    '命之座 · 浪客座': 'Constellation · Peregrinus',
+    '纪行 · 登场篇目': 'Chronicle · Appearances', '名场面': 'Scenes', '羁绊': 'Bonds',
     '下载中心': 'Download Center', '在线阅读': 'Online Reading',
     '分享资源与工具文件': 'Shared resources and utility files',
     'TXT · EPUB · PDF 连续滚动阅读 · 进度自动记忆': 'Continuous TXT · EPUB · PDF reading · progress saved automatically',

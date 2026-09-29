@@ -537,7 +537,7 @@ let wandererChapter = 0;      // 当前章节索引（切语言时保持不变�
 async function loadWanderer() {
   const lang = isEnglish() ? 'en' : 'zh';
   if (!wandererData[lang]) {
-    const url = (lang === 'en' ? 'data/wanderer.en.json' : 'data/wanderer.json') + '?v=20260920a';
+    const url = (lang === 'en' ? 'data/wanderer.en.json' : 'data/wanderer.json') + '?v=20260929a';
     const r = await fetch(url);
     if (!r.ok) throw new Error('HTTP ' + r.status);
     wandererData[lang] = await r.json();
@@ -592,10 +592,18 @@ async function renderWanderer() {
 
   renderWandererRoster(data);
   renderWandererChapter(data);
+  renderWandererChronicle(data);
+  renderWandererScenes(data);
+  renderWandererBonds(data);
   renderWandererQuotes(data);
   renderWandererConstellation(data);
-  renderWandererSkills(data);
   setTimeout(initReveal, 50);
+}
+
+// 数据里没有的区块整块隐藏，避免留一个空标题在页面上
+function wmRevealBlock(id, hasContent) {
+  const el = document.getElementById(id);
+  if (el) el.hidden = !hasContent;
 }
 
 function renderWandererRoster(data) {
@@ -655,21 +663,58 @@ function renderWandererConstellation(data) {
     </div>`).join('');
 }
 
-function renderWandererSkills(data) {
-  const list = document.getElementById('wmSkillList');
-  if (!list) return;
-  setWmText('wmSkillsTitle', (data.sectionTitles || {}).skills);
-  const outfit = data.outfit;
-  setWmText('wmOutfit', outfit ? outfit.name + ' · ' + outfit.gloss : '');
-  const rows = (data.skills || []).map(s =>
-    `<div class="wm-skill">
-      <span class="wm-skill-kind">${esc(s.kind)}</span>
-      <span class="wm-skill-name">${esc(s.name)}</span>
-      <span class="wm-skill-gloss">${esc(s.gloss)}</span>
+// 纪行：按版本先后列出他登场过的篇目
+function renderWandererChronicle(data) {
+  const box = data.chronicle || {};
+  const items = box.items || [];
+  wmRevealBlock('wmChronBlock', items.length > 0);
+  const list = document.getElementById('wmChronList');
+  if (!list || !items.length) return;
+  setWmText('wmChronTitle', box.title);
+  setWmText('wmChronNote', box.note);
+  list.innerHTML = items.map(it =>
+    `<li class="wm-chron-item reveal">
+      <span class="wm-chron-ver">${esc(it.ver)}</span>
+      <div class="wm-chron-body">
+        ${it.kind ? `<span class="wm-chron-kind">${esc(it.kind)}</span>` : ''}
+        <h3 class="wm-chron-name">${esc(it.name)}</h3>
+        <p class="wm-chron-text">${esc(it.text)}</p>
+      </div>
+    </li>`).join('');
+}
+
+// 名场面：具体场景 + 可选的当场台词
+function renderWandererScenes(data) {
+  const box = data.scenes || {};
+  const items = box.items || [];
+  wmRevealBlock('wmSceneBlock', items.length > 0);
+  const grid = document.getElementById('wmSceneGrid');
+  if (!grid || !items.length) return;
+  setWmText('wmSceneTitle', box.title);
+  grid.innerHTML = items.map(sc =>
+    `<article class="wm-scene-card reveal">
+      ${sc.where ? `<span class="wm-scene-where">${esc(sc.where)}</span>` : ''}
+      <h3 class="wm-scene-name">${esc(sc.name)}</h3>
+      <div class="wm-scene-text">${wmParagraphs(sc.text)}</div>
+      ${sc.quote ? `<blockquote class="wm-scene-quote">${wmParagraphs(sc.quote)}</blockquote>` : ''}
+    </article>`).join('');
+}
+
+// 羁绊：与他有过交集的人
+function renderWandererBonds(data) {
+  const box = data.bonds || {};
+  const items = box.items || [];
+  wmRevealBlock('wmBondBlock', items.length > 0);
+  const grid = document.getElementById('wmBondGrid');
+  if (!grid || !items.length) return;
+  setWmText('wmBondTitle', box.title);
+  grid.innerHTML = items.map(it =>
+    `<div class="wm-bond-card reveal">
+      ${it.rel ? `<span class="wm-bond-rel">${esc(it.rel)}</span>` : ''}
+      <h3 class="wm-bond-name">${esc(it.name)}</h3>
+      ${it.role ? `<span class="wm-bond-role">${esc(it.role)}</span>` : ''}
+      <p class="wm-bond-text">${esc(it.text)}</p>
     </div>`).join('');
-  const states = (data.states || []).map(s =>
-    `<span class="wm-state">${esc(s.name)} · ${esc(s.gloss)}</span>`).join('');
-  list.innerHTML = rows + (states ? `<div class="wm-state-row">${states}</div>` : '');
 }
 
 function stepWanderer(delta) {

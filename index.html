@@ -26,7 +26,7 @@
   <title>风春桐海君 — 游戏 · 故事 · 星辰</title>
   <script>document.documentElement.classList.add('js')</script>
   <!-- 缓存破坏：改动 css/js 后记得同步递增 ?v=（配合 .htaccess 缓存头避免旧样式残留） -->
-  <link rel="stylesheet" href="css/style.css?v=20260920a">
+  <link rel="stylesheet" href="css/style.css?v=20260929a">
   <!-- 字体：googleapis/gstatic 大陆不可达，使用 fonts.loli.net 镜像（CSP 中两者都保留，换回时无需改配置） -->
   <link rel="preconnect" href="https://fonts.loli.net">
   <link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
@@ -595,6 +595,34 @@
           </article>
         </div>
 
+        <!-- 纪行：登场篇目 -->
+        <section class="wm-block" id="wmChronBlock" hidden>
+          <div class="section-header reveal">
+            <div class="section-label">CHRONICLE</div>
+            <h2 class="section-title"><span class="accent-bar"></span><span id="wmChronTitle">纪行 · 登场篇目</span></h2>
+            <p class="section-sub" id="wmChronNote"></p>
+          </div>
+          <ol class="wm-chron" id="wmChronList"></ol>
+        </section>
+
+        <!-- 名场面 -->
+        <section class="wm-block" id="wmSceneBlock" hidden>
+          <div class="section-header reveal">
+            <div class="section-label">SCENES</div>
+            <h2 class="section-title"><span class="accent-bar"></span><span id="wmSceneTitle">名场面</span></h2>
+          </div>
+          <div class="wm-scene-grid" id="wmSceneGrid"></div>
+        </section>
+
+        <!-- 羁绊 -->
+        <section class="wm-block" id="wmBondBlock" hidden>
+          <div class="section-header reveal">
+            <div class="section-label">BONDS</div>
+            <h2 class="section-title"><span class="accent-bar"></span><span id="wmBondTitle">羁绊</span></h2>
+          </div>
+          <div class="wm-bond-grid" id="wmBondGrid"></div>
+        </section>
+
         <!-- 语录 -->
         <section class="wm-block">
           <div class="section-header reveal">
@@ -611,16 +639,6 @@
             <h2 class="section-title"><span class="accent-bar"></span><span id="wmConstTitle">命之座 · 浪客座</span></h2>
           </div>
           <div class="wm-const-grid" id="wmConstGrid"></div>
-        </section>
-
-        <!-- 天赋 -->
-        <section class="wm-block">
-          <div class="section-header reveal">
-            <div class="section-label">TALENTS</div>
-            <h2 class="section-title"><span class="accent-bar"></span><span id="wmSkillsTitle">天赋</span></h2>
-            <p class="section-sub" id="wmOutfit"></p>
-          </div>
-          <div class="wm-skill-list" id="wmSkillList"></div>
         </section>
 
         <div class="page-footer-spacer"></div>
@@ -706,6 +724,6 @@
   <!-- DOMPurify：文章 Markdown 渲染后消毒；CDN 失败时安全降级为纯文本 -->
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
   <script src="js/i18n.js?v=20260920b"></script>
-  <script src="js/main.js?v=20260920c"></script>
+  <script src="js/main.js?v=20260929a"></script>
 </body>
 </html>

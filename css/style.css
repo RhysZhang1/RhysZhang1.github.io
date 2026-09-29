@@ -830,14 +830,35 @@ body.no-scroll { overflow: hidden; }
 .wm-const-name { display: block; color: var(--text-primary); font: 600 .98rem/1.5 var(--serif); }
 .wm-const-gloss { display: block; margin-top: .3rem; color: var(--text-dim); font: .68rem/1.5 var(--mono); }
 
-/* 天赋 */
-.wm-skill-list { display: grid; gap: .7rem; }
-.wm-skill { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; padding: .95rem 1.15rem; border: 1px solid var(--glass-border); border-radius: 14px; background: var(--glass-bg); }
-.wm-skill-kind { color: var(--anemo); font: .62rem/1.4 var(--mono); letter-spacing: .12em; white-space: nowrap; }
-.wm-skill-name { color: var(--text-primary); font: 600 1.02rem/1.5 var(--serif); }
-.wm-skill-gloss { color: var(--text-dim); font: .7rem/1.5 var(--mono); text-align: right; }
-.wm-state-row { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1rem; }
-.wm-state { padding: .32rem .72rem; border: 1px solid var(--anemo-border); border-radius: 999px; background: var(--anemo-bg); color: var(--anemo-l); font: .7rem/1.5 var(--mono); }
+/* 纪行：登场篇目 */
+.wm-chron { display: grid; gap: .9rem; margin: 0; padding: 0 0 0 1.15rem; border-left: 1px solid var(--anemo-border); list-style: none; }
+.wm-chron-item { position: relative; display: grid; grid-template-columns: 3.1rem minmax(0, 1fr); gap: .9rem; align-items: start; }
+.wm-chron-item::before { content: ''; position: absolute; left: calc(-1.15rem - 3.5px); top: 1.05rem; width: 7px; height: 7px; border-radius: 50%; background: var(--anemo); box-shadow: 0 0 0 3px var(--anemo-bg); }
+.wm-chron-ver { padding-top: .85rem; color: var(--anemo); font: 500 .78rem/1.4 var(--mono); letter-spacing: .06em; }
+.wm-chron-body { padding: .85rem 1.1rem 1rem; border: 1px solid var(--glass-border); border-radius: 14px; background: var(--glass-bg); }
+.wm-chron-kind { display: inline-block; margin-bottom: .4rem; padding: .16rem .52rem; border: 1px solid var(--anemo-border); border-radius: 999px; background: var(--anemo-bg); color: var(--anemo-l); font: .6rem/1.5 var(--mono); letter-spacing: .1em; }
+.wm-chron-name { color: var(--text-primary); font: 600 1.02rem/1.5 var(--serif); }
+.wm-chron-text { margin-top: .4rem; color: var(--text-secondary); font: 400 .9rem/1.85 var(--serif); }
+
+/* 名场面 */
+.wm-scene-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.wm-scene-card { display: flex; flex-direction: column; padding: 1.35rem 1.4rem; border: 1px solid var(--glass-border); border-radius: 16px; background: var(--glass-bg); box-shadow: inset 0 1px var(--glass-highlight); }
+.wm-scene-where { display: block; margin-bottom: .5rem; color: var(--anemo); font: .6rem/1.4 var(--mono); letter-spacing: .12em; }
+.wm-scene-name { margin-bottom: .65rem; color: var(--text-primary); font: 600 1.05rem/1.5 var(--serif); }
+.wm-scene-text { color: var(--text-secondary); font: 400 .93rem/1.95 var(--serif); }
+.wm-scene-text p { margin-bottom: .8rem; }
+.wm-scene-text p:last-child { margin-bottom: 0; }
+.wm-scene-quote { margin-top: 1.05rem; padding: .15rem 0 .15rem 1rem; border-left: 2px solid var(--anemo-border); }
+.wm-scene-quote p { color: var(--text-primary); font: 400 .92rem/1.9 var(--serif); }
+.wm-scene-quote p + p { margin-top: .6rem; }
+
+/* 羁绊 */
+.wm-bond-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .85rem; }
+.wm-bond-card { padding: 1.15rem 1.2rem; border: 1px solid var(--glass-border); border-radius: 14px; background: var(--glass-bg); }
+.wm-bond-rel { display: inline-block; margin-bottom: .5rem; padding: .16rem .52rem; border: 1px solid var(--anemo-border); border-radius: 999px; background: var(--anemo-bg); color: var(--anemo-l); font: .6rem/1.5 var(--mono); letter-spacing: .1em; }
+.wm-bond-name { color: var(--text-primary); font: 600 1rem/1.5 var(--serif); }
+.wm-bond-role { display: block; margin-top: .18rem; color: var(--text-dim); font: .68rem/1.5 var(--mono); }
+.wm-bond-text { margin-top: .6rem; color: var(--text-secondary); font: 400 .88rem/1.85 var(--serif); }
 
 /* ===== 响应式 ===== */
 /* 宽屏字号校准：放大阅读层，保留展示标题的原有尺度 */
@@ -991,9 +1012,11 @@ body.no-scroll { overflow: hidden; }
 }
 @media (max-width: 620px) {
   .wm-hero-caption { display: none; }
-  .wm-quote-grid, .wm-const-grid { grid-template-columns: 1fr; }
-  .wm-skill { grid-template-columns: 1fr; gap: .3rem; }
-  .wm-skill-gloss { text-align: left; }
+  .wm-quote-grid, .wm-const-grid, .wm-scene-grid, .wm-bond-grid { grid-template-columns: 1fr; }
+  .wm-chron { padding-left: .9rem; }
+  .wm-chron-item { grid-template-columns: 1fr; gap: .3rem; }
+  .wm-chron-item::before { left: calc(-.9rem - 3.5px); top: .5rem; }
+  .wm-chron-ver { padding-top: 0; }
   .wm-roster-label { font-size: .8rem; }
   .wm-step-label { display: none; }
 }
