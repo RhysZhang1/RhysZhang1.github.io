@@ -537,7 +537,7 @@ let wandererChapter = 0;      // 当前章节索引（切语言时保持不变�
 async function loadWanderer() {
   const lang = isEnglish() ? 'en' : 'zh';
   if (!wandererData[lang]) {
-    const url = (lang === 'en' ? 'data/wanderer.en.json' : 'data/wanderer.json') + '?v=20260929a';
+    const url = (lang === 'en' ? 'data/wanderer.en.json' : 'data/wanderer.json') + '?v=20260929b';
     const r = await fetch(url);
     if (!r.ok) throw new Error('HTTP ' + r.status);
     wandererData[lang] = await r.json();
